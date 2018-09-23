@@ -14,7 +14,8 @@ struct Card {
     private(set) var identifier: Int
     private var shape: Int
     private var color: Int
-    private var filling: Int
+    private var shading: Int
+    private var numOfShapes: Int
     
     static var uniqueIdentifier = 0
     
@@ -29,6 +30,7 @@ struct Card {
         self.identifier = Card.getNextUniqueIdentifier()
         self.shape = -1
         self.color = -1
-        self.filling = -1
+        self.shading = -1
+        self.numOfShapes = -1
     }
 }

@@ -11,16 +11,15 @@ import UIKit
 class ViewController: UIViewController {
     
     private let game = Set()
-    private let deck = [Card]()
 //    private let shapes = [NSAttributedString(string: "\u{25A1}", attributes: [NSAttributedStringKey.foregroundColor : UIColor.green])]
     private let colors = ["red", "green", "blue"]
-    private let filling = ["d"]
+    private let shading = ["d"]
     private let numberOfShapes = [1,2,3]
+    lazy private var shapes = [diamond,square,circle]
     
-    
-       lazy private var shapes = [square]
-    
-    private let square = NSAttributedString(string: "\u{25A1}")
+    private let diamond = NSAttributedString(string: "\u{25CA}")
+    private let square = NSAttributedString(string: "\u{25A2}")
+    private let circle = NSAttributedString(string: "\u{25EF}")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +34,7 @@ class ViewController: UIViewController {
     @IBOutlet var buttons: [UIButton]! {
         didSet {
 //            initDeck()
+            initGameBoard()
         }
     }
     
@@ -56,30 +56,62 @@ class ViewController: UIViewController {
 
     }
     
-    func changeShape(ofButton button: UIButton) {
-        button.layer.borderWidth = 3.0
-        button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
-        button.layer.cornerRadius = 8.0
-        button.setAttributedTitle(shapes[0], for: UIControlState.normal)
+//    [NSAttributedString(string: "\u{25A1}", attributes: [NSAttributedStringKey.foregroundColor : UIColor.green])]
+    
+    func initGameBoard() {
+        for cardIndex in 0..<game.numOfCardsOnStart {
+            let cardProperty = getProperties(forCard: game.deck[cardIndex])
+            let shape = printShape(ofShape: shapes[cardProperty[1]].string, times: numberOfShapes[cardProperty[3]])
+            let foregroundColor = getColor(fromCardProperty: cardProperty)
+            buttons[cardIndex].setAttributedTitle(NSAttributedString(string: shape, attributes: [NSAttributedStringKey.foregroundColor : foregroundColor]), for: UIControlState.normal)
+        }
     }
     
-   
-                    
-//                    for buttonIndex in buttons.indices{
-//                        buttons[buttonIndex].setAttributedTitle(shapes[0], for: UIControlState.normal)
-//                    }
+    func getColor (fromCardProperty cardProperty: [Int]) ->  UIColor{
+        let color = colors[cardProperty[0]]
+        switch color {
+            case "red":
+                return UIColor.red
+            case "green":
+                return UIColor.green
+            default: return UIColor.blue
+        }
+    }
     
-    var colorShapeFiiling = [Int:[Int]]()
+    func printShape(ofShape shape: String, times numOfTimes: Int) -> String {
+        var shapeToPrint = ""
+        for _ in 1...numOfTimes {
+            shapeToPrint += shape
+        }
+        return shapeToPrint
+    }
     
-    func getColorShapeFilling(for card: Card) -> [Int] {
-        if colorShapeFiiling[card.identifier] == nil {
+    func changeShape(ofButton button: UIButton) {
+        if button.layer.borderWidth == 3.0 {
+            button.layer.borderWidth = 0
+            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            button.layer.cornerRadius = 0
+        }
+        else {
+            button.layer.borderWidth = 3.0
+            button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
+            button.layer.cornerRadius = 8.0
+        }
+//        button.setAttributedTitle(shapes[0], for: UIControlState.normal)
+    }
+    
+    var cardProperties = [Int:[Int]]()
+    
+    //returns color, shape, shading and number of shapes for a specific card
+    func getProperties(forCard card: Card) -> [Int] {
+        if cardProperties[card.identifier] == nil {
             let randomColor = Int(arc4random_uniform(UInt32(colors.count)))
             let randomShape = Int(arc4random_uniform(UInt32(shapes.count)))
-            let randomFilling = Int(arc4random_uniform(UInt32(filling.count)))
+            let randomShading = Int(arc4random_uniform(UInt32(shading.count)))
             let randomNumOfShapes = Int(arc4random_uniform(UInt32(numberOfShapes.count)))
-            colorShapeFiiling[card.identifier] = [randomColor, randomShape, randomFilling, randomNumOfShapes]
+            cardProperties[card.identifier] = [randomColor, randomShape, randomShading, randomNumOfShapes]
         }
-        return colorShapeFiiling[card.identifier] ?? [-1, -1, -1, -1]
+        return cardProperties[card.identifier] ?? [-1, -1, -1, -1]
     }
 
 
