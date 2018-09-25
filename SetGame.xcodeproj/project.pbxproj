@@ -13,7 +13,7 @@
 		0D64A598215383F000473198 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D64A597215383F000473198 /* Assets.xcassets */; };
 		0D64A59B215383F000473198 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D64A599215383F000473198 /* LaunchScreen.storyboard */; };
 		0D64A5A42153847400473198 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64A5A32153847400473198 /* Card.swift */; };
-		0D64A5A62153848200473198 /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64A5A52153848200473198 /* Set.swift */; };
+		0D64A5A62153848200473198 /* SetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64A5A52153848200473198 /* SetGame.swift */; };
 		0D64A5AE215A19ED00473198 /* SetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64A5AD215A19ED00473198 /* SetTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0D64A58D215383EF00473198 /* Set.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Set.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0D64A58D215383EF00473198 /* SetGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SetGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D64A590215383EF00473198 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D64A592215383EF00473198 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0D64A595215383EF00473198 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -36,7 +36,7 @@
 		0D64A59A215383F000473198 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D64A59C215383F000473198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D64A5A32153847400473198 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
-		0D64A5A52153848200473198 /* Set.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
+		0D64A5A52153848200473198 /* SetGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGame.swift; sourceTree = "<group>"; };
 		0D64A5AB215A19ED00473198 /* SetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D64A5AD215A19ED00473198 /* SetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTests.swift; sourceTree = "<group>"; };
 		0D64A5AF215A19ED00473198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -72,7 +72,7 @@
 		0D64A58E215383EF00473198 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0D64A58D215383EF00473198 /* Set.app */,
+				0D64A58D215383EF00473198 /* SetGame.app */,
 				0D64A5AB215A19ED00473198 /* SetTests.xctest */,
 			);
 			name = Products;
@@ -86,7 +86,7 @@
 				0D64A594215383EF00473198 /* Main.storyboard */,
 				0D64A59C215383F000473198 /* Info.plist */,
 				0D64A5A32153847400473198 /* Card.swift */,
-				0D64A5A52153848200473198 /* Set.swift */,
+				0D64A5A52153848200473198 /* SetGame.swift */,
 			);
 			path = Set;
 			sourceTree = "<group>";
@@ -113,9 +113,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0D64A58C215383EF00473198 /* Set */ = {
+		0D64A58C215383EF00473198 /* SetGame */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0D64A59F215383F000473198 /* Build configuration list for PBXNativeTarget "Set" */;
+			buildConfigurationList = 0D64A59F215383F000473198 /* Build configuration list for PBXNativeTarget "SetGame" */;
 			buildPhases = (
 				0D64A589215383EF00473198 /* Sources */,
 				0D64A58A215383EF00473198 /* Frameworks */,
@@ -125,9 +125,9 @@
 			);
 			dependencies = (
 			);
-			name = Set;
+			name = SetGame;
 			productName = Set;
-			productReference = 0D64A58D215383EF00473198 /* Set.app */;
+			productReference = 0D64A58D215383EF00473198 /* SetGame.app */;
 			productType = "com.apple.product-type.application";
 		};
 		0D64A5AA215A19ED00473198 /* SetTests */ = {
@@ -167,7 +167,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0D64A588215383EF00473198 /* Build configuration list for PBXProject "Set" */;
+			buildConfigurationList = 0D64A588215383EF00473198 /* Build configuration list for PBXProject "SetGame" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -180,7 +180,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0D64A58C215383EF00473198 /* Set */,
+				0D64A58C215383EF00473198 /* SetGame */,
 				0D64A5AA215A19ED00473198 /* SetTests */,
 			);
 		};
@@ -211,7 +211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D64A5A62153848200473198 /* Set.swift in Sources */,
+				0D64A5A62153848200473198 /* SetGame.swift in Sources */,
 				0D64A593215383EF00473198 /* ViewController.swift in Sources */,
 				0D64A5A42153847400473198 /* Card.swift in Sources */,
 				0D64A591215383EF00473198 /* AppDelegate.swift in Sources */,
@@ -231,7 +231,7 @@
 /* Begin PBXTargetDependency section */
 		0D64A5B1215A19ED00473198 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0D64A58C215383EF00473198 /* Set */;
+			target = 0D64A58C215383EF00473198 /* SetGame */;
 			targetProxy = 0D64A5B0215A19ED00473198 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -422,7 +422,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Set.app/Set";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SetGame.app/SetGame";
 			};
 			name = Debug;
 		};
@@ -442,14 +442,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Set.app/Set";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SetGame.app/SetGame";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0D64A588215383EF00473198 /* Build configuration list for PBXProject "Set" */ = {
+		0D64A588215383EF00473198 /* Build configuration list for PBXProject "SetGame" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0D64A59D215383F000473198 /* Debug */,
@@ -458,7 +458,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0D64A59F215383F000473198 /* Build configuration list for PBXNativeTarget "Set" */ = {
+		0D64A59F215383F000473198 /* Build configuration list for PBXNativeTarget "SetGame" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0D64A5A0215383F000473198 /* Debug */,

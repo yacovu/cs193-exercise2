@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Card {
+public struct Card {
     var isMatched: Bool
     private(set) var identifier: Int
     var shape: Int
@@ -23,7 +23,7 @@ struct Card {
         return uniqueIdentifier
     }
     
-    init(shape: Int, color: Int, shading: Int, numOfShapes: Int) {
+    public init(shape: Int, color: Int, shading: Int, numOfShapes: Int) {
         self.identifier = Card.getNextUniqueIdentifier()
         self.isMatched = false
         self.shape = shape

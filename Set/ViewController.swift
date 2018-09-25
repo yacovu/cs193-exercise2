@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private let game = Set()
+    private let game = SetGame()
     private var selectedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
     

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Set {
+public class SetGame {
     
     let numOfCardsOnStart = 12
     
@@ -47,33 +47,27 @@ class Set {
     private var alreadyMatchedCard = [Card]()
     
     func selectCard(atIndex index: Int) {
-//        var setFound = false
         selectedCards.append(cardsOnGameBoard[index])
-//        if (selectedCards.count == 3) {
-//            setFound = checkForSet()
-//            selectedCards.removeAll()
-//        }
-//        return setFound
     }
-    
     
     func checkForSet() -> Bool {
         if (selectedCards.count != 3) {
             return false
         }
-        return checkForSet(first: selectedCards[0], second: selectedCards[1], third: selectedCards[2])
+        let isMatched = SetGame.checkForSet(first: selectedCards[0], second: selectedCards[1], third: selectedCards[2])
+        if (isMatched) {
+            selectedCards[0].isMatched = true
+            selectedCards[1].isMatched = true
+            selectedCards[2].isMatched = true
+        }
+        return isMatched
     }
     
-    func checkForSet(first: Card, second: Card, third: Card) -> Bool {
-        var setFound = false
-        
-        if (haveSameNumberOfShapes(first: first, second: second, third: third) || haveThreeDifferentNumberOfShapes(first: first, second: second, third: third)) && (haveSameShape(first: first, second: second, third: third) || haveThreeDifferentShapes(first: first, second: second, third: third)) && (haveSameColor(first: first, second: second, third: third) || haveThreeDifferentColors(first: first, second: second, third: third)) {
-            for cardIndex in selectedCards.indices {
-                selectedCards[cardIndex].isMatched = true
-            }
-            setFound = true
-        }
-        return setFound
+    public static func checkForSet(first: Card, second: Card, third: Card) -> Bool {
+        return
+            (haveSameNumberOfShapes(first: first, second: second, third: third) || haveThreeDifferentNumberOfShapes(first: first, second: second, third: third))
+            && (haveSameShape(first: first, second: second, third: third) || haveThreeDifferentShapes(first: first, second: second, third: third))
+            && (haveSameColor(first: first, second: second, third: third) || haveThreeDifferentColors(first: first, second: second, third: third))
     }
     
 //    func selectedCardsAreNotMatchedYet (first: Card, second: Card, third: Card) -> Bool {
@@ -85,35 +79,35 @@ class Set {
 //        return true
 //    }
     
-    func haveSameNumberOfShapes(first: Card, second: Card, third: Card) -> Bool {
+    static func haveSameNumberOfShapes(first: Card, second: Card, third: Card) -> Bool {
         return first.numOfShapes == second.numOfShapes && second.numOfShapes == third.numOfShapes
     }
     
-    func haveThreeDifferentNumberOfShapes(first: Card, second: Card, third: Card) -> Bool {
+    static func haveThreeDifferentNumberOfShapes(first: Card, second: Card, third: Card) -> Bool {
         return first.numOfShapes != second.numOfShapes && second.numOfShapes != third.numOfShapes
     }
     
-    func haveSameShape(first: Card, second: Card, third: Card) -> Bool {
+    static func haveSameShape(first: Card, second: Card, third: Card) -> Bool {
         return first.shape == second.shape && second.shape == third.shape
     }
     
-    func haveThreeDifferentShapes(first: Card, second: Card, third: Card) -> Bool {
+    static func haveThreeDifferentShapes(first: Card, second: Card, third: Card) -> Bool {
         return first.shape != second.shape && second.shape != third.shape
     }
     
-    func haveSameShading(first: Card, second: Card, third: Card) -> Bool {
+    static func haveSameShading(first: Card, second: Card, third: Card) -> Bool {
         return first.shading == second.shape && second.shape == third.shading
     }
 
-    func haveThreeDifferentShadings(first: Card, second: Card, third: Card) -> Bool {
+    static func haveThreeDifferentShadings(first: Card, second: Card, third: Card) -> Bool {
         return first.shading != second.shape && second.shape != third.shading
     }
     
-    func haveSameColor(first: Card, second: Card, third: Card) -> Bool {
+    static func haveSameColor(first: Card, second: Card, third: Card) -> Bool {
         return first.color == second.color && second.color == third.color
     }
     
-    func haveThreeDifferentColors(first: Card, second: Card, third: Card) -> Bool {
+    static func haveThreeDifferentColors(first: Card, second: Card, third: Card) -> Bool {
         return first.color != second.color && second.color != third.color
     }
     

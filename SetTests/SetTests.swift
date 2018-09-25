@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import SetGame
 
 class SetTests: XCTestCase {
     
@@ -20,8 +21,17 @@ class SetTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testSameShapeIsMatched() {
+        let card1 = Card(shape: 1, color: 0, shading: 0, numOfShapes: 0)
+        let card2 = Card(shape: 1, color: 1, shading: 1, numOfShapes: 1)
+        let card3 = Card(shape: 1, color: 2, shading: 2, numOfShapes: 2)
+        XCTAssertTrue(SetGame.checkForSet(first: card1, second: card2, third: card3))
+    }
+    
+    func testOneShapeDifferentNotMatched() {
+        let card1 = Card(shape: 1, color: 0, shading: 0, numOfShapes: 0)
+        let card2 = Card(shape: 0, color: 1, shading: 1, numOfShapes: 1)
+        let card3 = Card(shape: 1, color: 2, shading: 2, numOfShapes: 2)
+        XCTAssertFalse(SetGame.checkForSet(first: card1, second: card2, third: card3))
     }
 }
