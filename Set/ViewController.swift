@@ -11,15 +11,10 @@ import UIKit
 class ViewController: UIViewController {
     
     private let game = Set()
-//    private let shapes = [NSAttributedString(string: "\u{25A1}", attributes: [NSAttributedStringKey.foregroundColor : UIColor.green])]
-    private let colors = ["red", "green", "blue"]
-    private let shading = ["d"]
-    private let numberOfShapes = [1,2,3]
-    lazy private var shapes = [diamond,square,circle]
+    private var selectedButtons = [UIButton]()
+    private var matchedButtons = [UIButton]()
     
-    private let diamond = NSAttributedString(string: "\u{25CA}")
-    private let square = NSAttributedString(string: "\u{25A2}")
-    private let circle = NSAttributedString(string: "\u{25EF}")
+    private var setFound = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,8 +37,14 @@ class ViewController: UIViewController {
     
     @IBAction func touchCard(_ sender: UIButton) {
         if let touchedCardIndex = buttons.index(of: sender) {
-            game.selectCard(atIndex: touchedCardIndex)
+//            print("touchedCardIndex: \(touchedCardIndex)")
+//            selectedButtons.append(sender)
+            setFound = game.selectCard(atIndex: touchedCardIndex)
             changeShape(ofButton: sender)
+//            if numOfSelectedCards == 3 {
+            if selectedButtons.count == 3 {
+                changeCardsShape(setFound: setFound)
+            }
             updateUI()
         }
         
@@ -52,23 +53,48 @@ class ViewController: UIViewController {
     func updateUI() {
         scoreLabel.text = "Score: \(game.score)"
         
-        
-
     }
     
-//    [NSAttributedString(string: "\u{25A1}", attributes: [NSAttributedStringKey.foregroundColor : UIColor.green])]
+    func changeCardsShape(setFound found: Bool) {
+        if found {
+            for button in selectedButtons {
+                button.layer.borderWidth = 3.0
+                button.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+                button.layer.cornerRadius = 8.0
+                matchedButtons = selectedButtons
+            }
+        }
+        else {
+            for button in selectedButtons {
+                button.layer.borderWidth = 0
+                button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                button.layer.cornerRadius = 0
+            }
+        }
+        selectedButtons.removeAll()
+    }
+    
+//    func changeCardToOriginalShape() {
+//        for button in buttons {
+//            button.layer.borderWidth = 0
+//            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+//            button.layer.cornerRadius = 0
+//        }
+//    }
     
     func initGameBoard() {
         for cardIndex in 0..<game.numOfCardsOnStart {
-            let cardProperty = getProperties(forCard: game.deck[cardIndex])
-            let shape = printShape(ofShape: shapes[cardProperty[1]].string, times: numberOfShapes[cardProperty[3]])
-            let foregroundColor = getColor(fromCardProperty: cardProperty)
-            buttons[cardIndex].setAttributedTitle(NSAttributedString(string: shape, attributes: [NSAttributedStringKey.foregroundColor : foregroundColor]), for: UIControlState.normal)
+            let card = game.cardsOnGameBoard[cardIndex]
+            let shape = game.shapes[card.shape]
+            let shade = game.shapeToShading[shape]![card.shading]
+            let foregroundColor = getColor(forCard: card)
+            buttons[cardIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shade.string, times: card.numOfShapes), attributes: [NSAttributedStringKey.foregroundColor : foregroundColor]), for: UIControlState.normal)
         }
     }
     
-    func getColor (fromCardProperty cardProperty: [Int]) ->  UIColor{
-        let color = colors[cardProperty[0]]
+        //TODO: change from switch case
+    func getColor (forCard card: Card) ->  UIColor{
+        let color = game.colors[card.color]
         switch color {
             case "red":
                 return UIColor.red
@@ -78,6 +104,7 @@ class ViewController: UIViewController {
         }
     }
     
+
     func printShape(ofShape shape: String, times numOfTimes: Int) -> String {
         var shapeToPrint = ""
         for _ in 1...numOfTimes {
@@ -91,28 +118,32 @@ class ViewController: UIViewController {
             button.layer.borderWidth = 0
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.layer.cornerRadius = 0
+            selectedButtons = selectedButtons.filter {$0 != button}
+//            numOfSelectedCards -= 1
         }
         else {
             button.layer.borderWidth = 3.0
             button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
             button.layer.cornerRadius = 8.0
+            selectedButtons.append(button)
+//            numOfSelectedCards += 1
         }
-//        button.setAttributedTitle(shapes[0], for: UIControlState.normal)
     }
     
-    var cardProperties = [Int:[Int]]()
+//    var cardProperties = [Int:[Int]]()
     
     //returns color, shape, shading and number of shapes for a specific card
-    func getProperties(forCard card: Card) -> [Int] {
-        if cardProperties[card.identifier] == nil {
-            let randomColor = Int(arc4random_uniform(UInt32(colors.count)))
-            let randomShape = Int(arc4random_uniform(UInt32(shapes.count)))
-            let randomShading = Int(arc4random_uniform(UInt32(shading.count)))
-            let randomNumOfShapes = Int(arc4random_uniform(UInt32(numberOfShapes.count)))
-            cardProperties[card.identifier] = [randomColor, randomShape, randomShading, randomNumOfShapes]
-        }
-        return cardProperties[card.identifier] ?? [-1, -1, -1, -1]
-    }
+//    func getProperties(forCard card: Card) -> [Int] {
+//        
+////        if cardProperties[card.identifier] == nil {
+////            let cardColor = game.deck[card.identifier].color
+////            let cardShape = game.deck[card.identifier].shape
+////            let cardShading = game.deck[card.identifier].shading
+////            let cardNumOfShapes = game.deck[card.identifier].numOfShapes
+////            cardProperties[card.identifier] = [cardColor,cardShape,cardShading,cardNumOfShapes]
+////        }
+////        return cardProperties[card.identifier] ?? [-1, -1, -1, -1]
+//    }
 
 
 

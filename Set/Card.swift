@@ -9,28 +9,26 @@
 import Foundation
 
 struct Card {
-//    private var isSelected: Bool
-    private var isMatched: Bool
+    var isMatched: Bool
     private(set) var identifier: Int
-    private var shape: Int
-    private var color: Int
-    private var shading: Int
-    private var numOfShapes: Int
+    var shape: Int
+    var color: Int
+    var shading: Int
+    var numOfShapes: Int
     
-    static var uniqueIdentifier = 0
+    static var uniqueIdentifier = -1
     
     static func getNextUniqueIdentifier() -> Int {
         uniqueIdentifier += 1
         return uniqueIdentifier
     }
     
-    init() {
-//        seflt.isSelected = false
-        self.isMatched = false
+    init(shape: Int, color: Int, shading: Int, numOfShapes: Int) {
         self.identifier = Card.getNextUniqueIdentifier()
-        self.shape = -1
-        self.color = -1
-        self.shading = -1
-        self.numOfShapes = -1
+        self.isMatched = false
+        self.shape = shape
+        self.color = color
+        self.shading = shading
+        self.numOfShapes = numOfShapes
     }
 }
