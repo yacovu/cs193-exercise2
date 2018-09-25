@@ -36,13 +36,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var scoreLabel: UILabel!
     
     @IBAction func touchCard(_ sender: UIButton) {
+        var setFound = false
         if let touchedCardIndex = buttons.index(of: sender) {
-//            print("touchedCardIndex: \(touchedCardIndex)")
-//            selectedButtons.append(sender)
-            setFound = game.selectCard(atIndex: touchedCardIndex)
+            game.selectCard(atIndex: touchedCardIndex)
             changeShape(ofButton: sender)
-//            if numOfSelectedCards == 3 {
             if selectedButtons.count == 3 {
+                setFound = game.checkForSet()
                 changeCardsShape(setFound: setFound)
             }
             updateUI()
