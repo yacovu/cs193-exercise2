@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Card {
+public struct Card : Hashable{
     var isMatched: Bool
     private(set) var identifier: Int
     var shape: Int

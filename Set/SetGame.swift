@@ -54,7 +54,7 @@ public class SetGame {
         if (selectedCards.count != 3) {
             return false
         }
-        let isMatched = SetGame.checkForSet(first: selectedCards[0], second: selectedCards[1], third: selectedCards[2])
+        let isMatched = SetGame.checkForSet(firstCard: selectedCards[0], secondCard: selectedCards[1], thirdCard: selectedCards[2])
         if (isMatched) {
             selectedCards[0].isMatched = true
             selectedCards[1].isMatched = true
@@ -63,11 +63,13 @@ public class SetGame {
         return isMatched
     }
     
-    public static func checkForSet(first: Card, second: Card, third: Card) -> Bool {
-        return
-            (haveSameNumberOfShapes(first: first, second: second, third: third) || haveThreeDifferentNumberOfShapes(first: first, second: second, third: third))
-            && (haveSameShape(first: first, second: second, third: third) || haveThreeDifferentShapes(first: first, second: second, third: third))
-            && (haveSameColor(first: first, second: second, third: third) || haveThreeDifferentColors(first: first, second: second, third: third))
+    public static func checkForSet(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        let numberOfShapeCondition = (haveSameNumberOfShapes(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard) || haveThreeDifferentNumberOfShapes(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard))
+        let shapeCondition = (haveSameShape(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard) || haveThreeDifferentShapes(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard))
+        let colorCondition = (haveSameColor(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard) || haveThreeDifferentColors(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard))
+        let shadingCondition = (haveSameShading(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard) || haveThreeDifferentShadings(firstCard: firstCard, secondCard: secondCard, thirdCard: thirdCard))
+        
+        return numberOfShapeCondition && shapeCondition && colorCondition && shadingCondition
     }
     
 //    func selectedCardsAreNotMatchedYet (first: Card, second: Card, third: Card) -> Bool {
@@ -79,39 +81,49 @@ public class SetGame {
 //        return true
 //    }
     
-    static func haveSameNumberOfShapes(first: Card, second: Card, third: Card) -> Bool {
-        return first.numOfShapes == second.numOfShapes && second.numOfShapes == third.numOfShapes
+    static func haveSameNumberOfShapes(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return firstCard.numOfShapes == secondCard.numOfShapes && secondCard.numOfShapes == thirdCard.numOfShapes
     }
     
-    static func haveThreeDifferentNumberOfShapes(first: Card, second: Card, third: Card) -> Bool {
-        return first.numOfShapes != second.numOfShapes && second.numOfShapes != third.numOfShapes
+    static func haveThreeDifferentNumberOfShapes(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return
+            firstCard.numOfShapes != secondCard.numOfShapes
+            && firstCard.numOfShapes != thirdCard.numOfShapes
+            && secondCard.numOfShapes != thirdCard.numOfShapes
     }
     
-    static func haveSameShape(first: Card, second: Card, third: Card) -> Bool {
-        return first.shape == second.shape && second.shape == third.shape
+    static func haveSameShape(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return firstCard.shape == secondCard.shape && secondCard.shape == thirdCard.shape
     }
     
-    static func haveThreeDifferentShapes(first: Card, second: Card, third: Card) -> Bool {
-        return first.shape != second.shape && second.shape != third.shape
+    static func haveThreeDifferentShapes(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return
+                firstCard.shape != secondCard.shape
+                && firstCard.shape != thirdCard.shape
+                && secondCard.shape != thirdCard.shape
     }
     
-    static func haveSameShading(first: Card, second: Card, third: Card) -> Bool {
-        return first.shading == second.shape && second.shape == third.shading
+    static func haveSameShading(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return firstCard.shading == secondCard.shading && secondCard.shape == thirdCard.shading
     }
 
-    static func haveThreeDifferentShadings(first: Card, second: Card, third: Card) -> Bool {
-        return first.shading != second.shape && second.shape != third.shading
+    static func haveThreeDifferentShadings(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return
+                firstCard.shading != secondCard.shading
+                && firstCard.shading != thirdCard.shading
+                && secondCard.shading != thirdCard.shading
     }
     
-    static func haveSameColor(first: Card, second: Card, third: Card) -> Bool {
-        return first.color == second.color && second.color == third.color
+    static func haveSameColor(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return firstCard.color == secondCard.color && secondCard.color == thirdCard.color
     }
     
-    static func haveThreeDifferentColors(first: Card, second: Card, third: Card) -> Bool {
-        return first.color != second.color && second.color != third.color
+    static func haveThreeDifferentColors(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
+        return
+                firstCard.color != secondCard.color
+                && firstCard.color != thirdCard.color
+                && secondCard.color != thirdCard.color
     }
-    
-    
     
     func dealThreeNewCards() {
         

@@ -42,7 +42,14 @@ class ViewController: UIViewController {
             changeShape(ofButton: sender)
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
-                changeCardsShape(setFound: setFound)
+                if setFound {
+                    changeCardsShapeToSet()
+                    disableButtons()
+                }
+                else {
+                    changeCardsShapeToSelected()
+                }
+                selectedButtons.removeAll()
             }
             updateUI()
         }
@@ -54,23 +61,27 @@ class ViewController: UIViewController {
         
     }
     
-    func changeCardsShape(setFound found: Bool) {
-        if found {
-            for button in selectedButtons {
-                button.layer.borderWidth = 3.0
-                button.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-                button.layer.cornerRadius = 8.0
-                matchedButtons = selectedButtons
-            }
+    func changeCardsShapeToSet() {
+        for button in selectedButtons {
+            button.layer.borderWidth = 3.0
+            button.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+            button.layer.cornerRadius = 8.0
+            matchedButtons = selectedButtons
         }
-        else {
-            for button in selectedButtons {
-                button.layer.borderWidth = 0
-                button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-                button.layer.cornerRadius = 0
-            }
+    }
+    
+    func changeCardsShapeToSelected() {
+        for button in selectedButtons {
+            button.layer.borderWidth = 0
+            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            button.layer.cornerRadius = 0
         }
-        selectedButtons.removeAll()
+    }
+    
+    func disableButtons() {
+        for button in selectedButtons {
+            button.isEnabled = false
+        }
     }
     
 //    func changeCardToOriginalShape() {
