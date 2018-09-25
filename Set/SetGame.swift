@@ -12,6 +12,8 @@ public class SetGame {
     
     let numOfCardsOnStart = 12
     
+    let maxGameBoardCapacity = 24
+    
     let deckCapacity = 81
     
     var score = 0
@@ -99,13 +101,40 @@ public class SetGame {
                 && secondCard.color != thirdCard.color
     }
     
+    func getCurrentDeckCapacity() -> Int {
+        return deck.count
+    }
+    
+    func dealOneCard() -> Card? {
+        return deck.popLast() ?? nil
+    }
+    
     func dealThreeNewCards() {
-        
+
+    }
+    
+    func getASet() -> [Int]? {
+        for firstIndex in 0..<cardsOnGameBoard.count {
+            for secondIndex in 0..<cardsOnGameBoard.count {
+                for thirdIndex in 0..<cardsOnGameBoard.count {
+                    if firstIndex != secondIndex && secondIndex != thirdIndex && firstIndex != thirdIndex {
+                        if SetGame.checkForSet(firstCard: cardsOnGameBoard[firstIndex], secondCard: cardsOnGameBoard[secondIndex], thirdCard: cardsOnGameBoard[thirdIndex]) {
+                            return [cardsOnGameBoard[firstIndex].identifier, cardsOnGameBoard[secondIndex].identifier, cardsOnGameBoard[thirdIndex].identifier]
+
+                        }
+                    }
+                }
+            }
+        }
+        return nil
+    }
+    
+    func exitGame() {
+        exit(0)
     }
     
     init() {
-        
-        // init deck
+        // Init Deck
         for shapeIndex in 0..<numOfDifferentShapes {
             for colorIndex in 0..<numOfDifferentColors {
                 for shadingIndex in 0..<numOfDifferentShadings {
@@ -122,12 +151,5 @@ public class SetGame {
             let secondRandomIndex = Int(arc4random_uniform(UInt32(deckCapacity)))
             deck.swapAt(firstRandomIndex, secondRandomIndex)
         }
-        
-//        // init gameboard
-//        for _ in 0..<numOfCardsOnStart {
-//            let cardIndex = Int(arc4random_uniform(UInt32(deck.count)))
-//            cardsOnGameBoard.append(deck[cardIndex])
-//            deck.remove(at: cardIndex)
-//        }
     }
 }

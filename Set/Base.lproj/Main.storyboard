@@ -14,25 +14,11 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Set" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SetGame" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Htr-On-fv4">
-                                <rect key="frame" x="155" y="757.66666666666663" width="64" height="20.333333333333371"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SAd-2q-Eam">
-                                <rect key="frame" x="35" y="55" width="128" height="30"/>
-                                <state key="normal" title="Deal 3 More Cards"/>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zr3-vK-KkG">
-                                <rect key="frame" x="253" y="55" width="75" height="30"/>
-                                <state key="normal" title="New Game"/>
-                            </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Kwo-HX-JG3">
                                 <rect key="frame" x="16" y="105" width="343" height="292"/>
                                 <subviews>
@@ -260,24 +246,63 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SAd-2q-Eam">
+                                <rect key="frame" x="16" y="55" width="128" height="30"/>
+                                <state key="normal" title="Deal 3 More Cards"/>
+                                <connections>
+                                    <action selector="dealCards:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0ck-qJ-WsN"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zr3-vK-KkG">
+                                <rect key="frame" x="271" y="54" width="75" height="30"/>
+                                <state key="normal" title="New Game"/>
+                                <connections>
+                                    <action selector="newGame:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7R6-OZ-zhK"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2t-d4-rJr">
+                                <rect key="frame" x="189" y="55" width="30" height="30"/>
+                                <state key="normal" title="Hint"/>
+                                <connections>
+                                    <action selector="newGame:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IZx-rA-1GE"/>
+                                    <action selector="showHint:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rl7-Im-pVk"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Cards in Deck: 81" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8xm-Mz-G9t">
+                                <rect key="frame" x="189" y="757" width="134" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Htr-On-fv4">
+                                <rect key="frame" x="65" y="757" width="64" height="20.333333333333371"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Htr-On-fv4" secondAttribute="bottom" id="2Dn-yE-dIg"/>
+                            <constraint firstItem="SAd-2q-Eam" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="47T-2F-Rwr"/>
                             <constraint firstItem="zr3-vK-KkG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="5Rj-3A-fCQ"/>
-                            <constraint firstItem="Kwo-HX-JG3" firstAttribute="top" secondItem="SAd-2q-Eam" secondAttribute="bottom" constant="20" id="7Qz-h7-CeN"/>
+                            <constraint firstItem="W2t-d4-rJr" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="DX5-b2-5J5"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="8xm-Mz-G9t" secondAttribute="bottom" constant="1" id="DYl-ca-TuT"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Kwo-HX-JG3" secondAttribute="trailing" constant="16" id="ILd-hS-0h2"/>
-                            <constraint firstItem="Htr-On-fv4" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Kwo-HX-JG3" secondAttribute="bottom" constant="8" symbolic="YES" id="KUE-H8-fxc"/>
-                            <constraint firstItem="zr3-vK-KkG" firstAttribute="leading" secondItem="SAd-2q-Eam" secondAttribute="trailing" constant="90" id="Kjk-HI-a17"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zr3-vK-KkG" secondAttribute="trailing" constant="47" id="Lyr-nb-aHd"/>
-                            <constraint firstItem="SAd-2q-Eam" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="TGB-sN-eoi"/>
-                            <constraint firstItem="Htr-On-fv4" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="UeB-hH-doG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zr3-vK-KkG" secondAttribute="trailing" constant="20" id="Lyr-nb-aHd"/>
+                            <constraint firstItem="8xm-Mz-G9t" firstAttribute="leading" secondItem="Htr-On-fv4" secondAttribute="trailing" constant="60" id="VfU-r0-XzY"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="8xm-Mz-G9t" secondAttribute="trailing" constant="30" id="W83-hK-qau"/>
+                            <constraint firstItem="W2t-d4-rJr" firstAttribute="leading" secondItem="SAd-2q-Eam" secondAttribute="trailing" constant="43" id="XCf-mN-ICh"/>
+                            <constraint firstItem="zr3-vK-KkG" firstAttribute="leading" secondItem="W2t-d4-rJr" secondAttribute="trailing" constant="63" id="Zm9-Jk-91z"/>
+                            <constraint firstItem="SAd-2q-Eam" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="aJP-kQ-svD"/>
+                            <constraint firstItem="Kwo-HX-JG3" firstAttribute="top" secondItem="W2t-d4-rJr" secondAttribute="bottom" constant="21" id="gF1-aZ-wVc"/>
                             <constraint firstItem="Kwo-HX-JG3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="gi0-pR-Q4J"/>
-                            <constraint firstItem="SAd-2q-Eam" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="kAs-gt-Toh"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Htr-On-fv4" secondAttribute="bottom" constant="1.6666666666666288" id="tpW-e2-EEb"/>
+                            <constraint firstItem="Htr-On-fv4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="wv4-eq-dIN"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="deckLabel" destination="8xm-Mz-G9t" id="iqg-Ge-7ne"/>
                         <outlet property="scoreLabel" destination="Htr-On-fv4" id="LPX-k1-JzP"/>
                         <outletCollection property="buttons" destination="eKt-x7-Ayq" collectionClass="NSMutableArray" id="DlD-vq-vnE"/>
                         <outletCollection property="buttons" destination="j48-Pf-zau" collectionClass="NSMutableArray" id="bt5-Ek-Qqg"/>
