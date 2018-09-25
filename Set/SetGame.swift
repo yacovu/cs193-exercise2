@@ -16,33 +16,16 @@ public class SetGame {
     
     var score = 0
     
-    private(set) var deck = [Card]()
+    let numOfDifferentColors = 3
+    let numOfDifferentShapes = 3
+    let numOfDifferentShadings = 3
+    let numOfShapes = 3
     
-    private(set) var cardsOnGameBoard = [Card]()
+    var deck = [Card]()
+    
+    var cardsOnGameBoard = [Card]()
     
     var selectedCards = [Card]()
-    
-    private(set) var colors = ["red", "green", "blue"]
-    private(set) var shading = ["blank","semiFilled","fullyFilled"]
-    private(set) var numberOfShapes = [1,2,3]
-    lazy private(set) var shapes = ["diamond", "square", "circle"]
-    
-    private let blankDiamond = NSAttributedString(string: "\u{25CA}")
-    private let blankSquare = NSAttributedString(string: "\u{25A2}")
-    private let blankCircle = NSAttributedString(string: "\u{25EF}")
-    
-    private let semiFilledDiamond = NSAttributedString(string: "\u{25C8}")
-    private let semiFilledSquare = NSAttributedString(string: "\u{25A3}")
-    private let semiFilledCircle = NSAttributedString(string: "\u{25C9}")
-    
-    private let fullyDiamond = NSAttributedString(string: "\u{25C6}")
-    private let fullySquare = NSAttributedString(string: "\u{25A0}")
-    private let fullyCircle = NSAttributedString(string: "\u{25CF}")
-    
-    lazy var shapeToShading = ["diamond":[blankDiamond, semiFilledDiamond, fullyDiamond],
-                               "square": [blankSquare, semiFilledSquare, fullySquare],
-                               "circle": [blankCircle, semiFilledCircle, fullyCircle]]
-    
     
     private var alreadyMatchedCard = [Card]()
     
@@ -71,15 +54,6 @@ public class SetGame {
         
         return numberOfShapeCondition && shapeCondition && colorCondition && shadingCondition
     }
-    
-//    func selectedCardsAreNotMatchedYet (first: Card, second: Card, third: Card) -> Bool {
-//        for card in selectedCards {
-//            if card.isMatched == true {
-//                return false
-//            }
-//        }
-//        return true
-//    }
     
     static func haveSameNumberOfShapes(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
         return firstCard.numOfShapes == secondCard.numOfShapes && secondCard.numOfShapes == thirdCard.numOfShapes
@@ -132,21 +106,28 @@ public class SetGame {
     init() {
         
         // init deck
-        for _ in 1...deckCapacity {
-            let randomColorIndex = Int(arc4random_uniform(UInt32(colors.count)))
-            let randomShapeIndex = Int(arc4random_uniform(UInt32(shapeToShading.keys.count)))
-            let shapeName = Array(shapeToShading.keys)[randomShapeIndex]
-            let shadingArray = shapeToShading[shapeName]
-            let randomShadingIndex = Int(arc4random_uniform(UInt32(shadingArray!.count)))
-            let randomNumOfShapes = Int(arc4random_uniform(UInt32(numberOfShapes.count)) + 1)
-            deck.append(Card(shape: randomShapeIndex, color: randomColorIndex, shading: randomShadingIndex, numOfShapes: randomNumOfShapes))
+        for shapeIndex in 0..<numOfDifferentShapes {
+            for colorIndex in 0..<numOfDifferentColors {
+                for shadingIndex in 0..<numOfDifferentShadings {
+                    for numOfShapesIndex in 0..<numOfShapes {
+                        deck.append(Card(shape: shapeIndex, color: colorIndex, shading: shadingIndex, numOfShapes: numOfShapesIndex))
+                    }
+                }
+            }
         }
         
-        // init gameboard
-        for _ in 0..<numOfCardsOnStart {
-            let cardIndex = Int(arc4random_uniform(UInt32(deck.count)))
-            cardsOnGameBoard.append(deck[cardIndex])
-            deck.remove(at: cardIndex)
+        //shuffle Deck
+        for _ in 1...deckCapacity {
+            let firstRandomIndex = Int(arc4random_uniform(UInt32(deckCapacity)))
+            let secondRandomIndex = Int(arc4random_uniform(UInt32(deckCapacity)))
+            deck.swapAt(firstRandomIndex, secondRandomIndex)
         }
+        
+//        // init gameboard
+//        for _ in 0..<numOfCardsOnStart {
+//            let cardIndex = Int(arc4random_uniform(UInt32(deck.count)))
+//            cardsOnGameBoard.append(deck[cardIndex])
+//            deck.remove(at: cardIndex)
+//        }
     }
 }
