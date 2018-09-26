@@ -129,9 +129,9 @@ public class SetGame {
             let firstCardFromDeck = deck.popLast()!
             let secondCardFromDeck = deck.popLast()!
             let thirdCardFromDeck = deck.popLast()!
-            cardsOnGameBoard.append(firstCardFromDeck)
-            cardsOnGameBoard.append(secondCardFromDeck)
-            cardsOnGameBoard.append(thirdCardFromDeck)
+//            cardsOnGameBoard.append(firstCardFromDeck)
+//            cardsOnGameBoard.append(secondCardFromDeck)
+//            cardsOnGameBoard.append(thirdCardFromDeck)
             return [firstCardFromDeck, secondCardFromDeck, thirdCardFromDeck]
         }
         return [Card]()

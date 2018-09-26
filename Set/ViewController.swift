@@ -12,8 +12,9 @@ class ViewController: UIViewController {
     private let game = SetGame()
     private var selectedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
-    private var freeButtons  = [UIButton]()
+//    private var freeButtons  = [UIButton]()
     private var needToDealNewCards = false
+    private var freeButtonIndex = 12 // the new free button index to add a new card to
     
     private var setFound = false
     
@@ -56,11 +57,14 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    //when press on hint not 3 cards are highlited
+    
     
     @IBOutlet var buttons: [UIButton]! {
         didSet {
             for button in buttons {
                 button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                button.tag = -1
             }
             initGameBoard()
         }
@@ -74,20 +78,28 @@ class ViewController: UIViewController {
     }
     
     @IBAction func dealCards(_ sender: UIButton) {
-        let threeNewCards = game.dealThreeNewCards() // get three new cards and add them to the gameboard
+        let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
             if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
-                for index in 0..<matchedButtons.count {
-                    matchedButtons[index].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
-                    changeShape(ofButton: matchedButtons[index])
-                    matchedButtons[index].isEnabled = true
+                for matchIndex in 0..<3 { // find the required button in buttons array
+                    for buttonIndex in 0..<buttons.count {
+                        if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag {
+                            buttons[buttonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])]), for: UIControlState.normal)
+                            changeShape(ofButton: buttons[buttonIndex])
+                            buttons[buttonIndex].tag = threeNewCards[matchIndex].identifier
+                            buttons[buttonIndex].isEnabled = true
+                        }
+                    }
                 }
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
                 for index in 0..<3 {
-                    let freeButtonToAddCardTo = freeButtons[0]
-                    freeButtonToAddCardTo.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
-                    freeButtons = Array(freeButtons.dropFirst()) // remove the curent button from freeButtons array
+//                    let freeButtonToAddCardTo = freeButtons[0]
+                    buttons[freeButtonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
+                    buttons[freeButtonIndex].tag = threeNewCards[index].identifier
+                    freeButtonIndex += 1
+                    game.cardsOnGameBoard.append(threeNewCards[index])
+//                    freeButtons = Array(freeButtons.dropFirst()) // remove the curent button from freeButtons array
                 }
             }
             else { // gameboard capacity reached to its max. Game over
@@ -145,13 +157,24 @@ class ViewController: UIViewController {
     
     func showHint() {
         if let threeSetCards = game.getASet() {
-            for button in buttons {
-                if threeSetCards.contains(button.tag) && button.isEnabled == true {
-                    button.layer.borderWidth = 3.0
-                    button.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
-                    button.layer.cornerRadius = 8.0
+            for cardIndex in 0..<threeSetCards.count {
+                let cardIdentifier = threeSetCards[cardIndex]
+                for button in buttons {
+                    if button.tag == cardIdentifier {
+                        button.layer.borderWidth = 3.0
+                        button.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+                        button.layer.cornerRadius = 8.0
+                    }
                 }
             }
+            
+//            for button in buttons {
+//                if threeSetCards.contains(button.tag) && button.isEnabled == true {
+//                    button.layer.borderWidth = 3.0
+//                    button.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+//                    button.layer.cornerRadius = 8.0
+//                }
+//            }
         }
         else {
             let alert = UIAlertController(title: "", message: "No available set on the board", preferredStyle: UIAlertControllerStyle.alert)
@@ -161,18 +184,20 @@ class ViewController: UIViewController {
         }
     }
     
-    func dealNewCard() {
-        // changes all the colors
-        for button in matchedButtons {
-            if let cardToAddToGameBoard = game.dealOneCard() {
-                button.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[cardToAddToGameBoard.shape]]![cardToAddToGameBoard.shading].string, times: cardToAddToGameBoard.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: cardToAddToGameBoard)]), for: UIControlState.normal)
-                changeShape(ofButton: button)
-            }
-        }
-        updateUI()
-    }
+//    func dealNewCard() {
+//        // changes all the colors
+//        for button in matchedButtons {
+//            if let cardToAddToGameBoard = game.dealOneCard() {
+//                button.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[cardToAddToGameBoard.shape]]![cardToAddToGameBoard.shading].string, times: cardToAddToGameBoard.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: cardToAddToGameBoard)]), for: UIControlState.normal)
+//                button.tag = cardToAddToGameBoard.identifier
+//                changeShape(ofButton: button)
+//            }
+//        }
+//        updateUI()
+//    }
     
     func addButtonsToMatchedButtonsArray() {
+        matchedButtons.removeAll()
         for buttonIndex in 0..<selectedButtons.count {
             matchedButtons.append(selectedButtons[buttonIndex])
         }
@@ -219,8 +244,9 @@ class ViewController: UIViewController {
             let foregroundColor = getColor(forCard: card)
             buttons[cardIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shade.string, times: card.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : foregroundColor]), for: UIControlState.normal)
             buttons[cardIndex].tag = card.identifier
+            buttons[cardIndex].tag = card.identifier
         }
-        freeButtons = Array(buttons.dropFirst(12))
+//        freeButtons = Array(buttons.dropFirst(12))
     }
     
     //TODO: change from switch case
