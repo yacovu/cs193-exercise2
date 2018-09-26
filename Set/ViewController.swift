@@ -74,40 +74,33 @@ class ViewController: UIViewController {
     }
     
     @IBAction func dealCards(_ sender: UIButton) {
-        if game.deck.count >= 3 { // have sufficient cards in the deck to deal
+        let threeNewCards = game.dealThreeNewCards() // get three new cards and add them to the gameboard
+        if threeNewCards.count == 3 {
             if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
-                for button in matchedButtons {
-                    if let cardToAddToGameBoard = game.dealOneCard() {
-                        game.cardsOnGameBoard.append(cardToAddToGameBoard)
-                        button.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[cardToAddToGameBoard.shape]]![cardToAddToGameBoard.shading].string, times: cardToAddToGameBoard.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: cardToAddToGameBoard)]), for: UIControlState.normal)
-                        changeShape(ofButton: button)
-                    }
-                    else { //deck is empty
-                        button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-                        sender.isEnabled = false
-                    }
+                for index in 0..<matchedButtons.count {
+                    matchedButtons[index].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
+                    changeShape(ofButton: matchedButtons[index])
+                    matchedButtons[index].isEnabled = true
                 }
             }
-            else {
-                if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity + 3 { // add 3 new cards to new places
-                    for _ in 1...3 {
-                        if let cardToAddToGameBoard = game.dealOneCard() {
-                            game.cardsOnGameBoard.append(cardToAddToGameBoard)
-                            let freeButton = freeButtons[0]
-                            freeButton.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[cardToAddToGameBoard.shape]]![cardToAddToGameBoard.shading].string, times: cardToAddToGameBoard.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: cardToAddToGameBoard)]), for: UIControlState.normal)
-                            freeButtons = Array(freeButtons.dropFirst())
-                        }
-                    }
-                }
-                else { // gameboard capacity reached to its max. Game over
-                    
+            else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
+                for index in 0..<3 {
+                    let freeButtonToAddCardTo = freeButtons[0]
+                    freeButtonToAddCardTo.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
+                    freeButtons = Array(freeButtons.dropFirst()) // remove the curent button from freeButtons array
                 }
             }
-            updateUI()
+            else { // gameboard capacity reached to its max. Game over
+                endGame()
+            }
         }
         else { // insufficient cards in the deck. The button is disabled
-            sender.isEnabled = false
+            let alert = UIAlertController(title: "Warning!", message: "Cards in the Deck", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            sender.isEnabled = false // disable the button as required
         }
+        needToDealNewCards = false
+        updateUI()
     }
     
     
@@ -119,8 +112,11 @@ class ViewController: UIViewController {
     @IBAction func touchCard(_ sender: UIButton) {
         var setFound = false
         if let touchedCardIndex = buttons.index(of: sender) {
+            // add removeall selected buttons
             if needToDealNewCards { // a set was found and now a new card was selected
-                dealNewCard()
+//                matchedButtons.removeAll()
+//                dealNewCard()
+                dealCards(sender)
             }
             game.selectCard(atIndex: touchedCardIndex)
             changeShape(ofButton: sender)
@@ -149,9 +145,8 @@ class ViewController: UIViewController {
     
     func showHint() {
         if let threeSetCards = game.getASet() {
-            print (threeSetCards)
             for button in buttons {
-                if threeSetCards.contains(button.tag) {
+                if threeSetCards.contains(button.tag) && button.isEnabled == true {
                     button.layer.borderWidth = 3.0
                     button.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
                     button.layer.cornerRadius = 8.0
@@ -167,6 +162,7 @@ class ViewController: UIViewController {
     }
     
     func dealNewCard() {
+        // changes all the colors
         for button in matchedButtons {
             if let cardToAddToGameBoard = game.dealOneCard() {
                 button.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[cardToAddToGameBoard.shape]]![cardToAddToGameBoard.shading].string, times: cardToAddToGameBoard.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: cardToAddToGameBoard)]), for: UIControlState.normal)
@@ -253,6 +249,10 @@ class ViewController: UIViewController {
             button.layer.borderWidth = 3.0
             button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
             button.layer.cornerRadius = 8.0
+            if selectedButtons.count == 3 {
+                selectedButtons.removeAll()
+                // add remove color blue
+            }
             selectedButtons.append(button)
         }
         else {

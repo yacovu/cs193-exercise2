@@ -29,9 +29,13 @@ public class SetGame {
     
     var selectedCards = [Card]()
     
-    private var alreadyMatchedCard = [Card]()
+//    private var alreadyMatchedCard = [Card]()
     
     func selectCard(atIndex index: Int) {
+        if selectedCards.count == 3 {
+            selectedCards.removeAll()
+            //add clear color from blue to white
+        }
         selectedCards.append(cardsOnGameBoard[index])
     }
     
@@ -41,11 +45,22 @@ public class SetGame {
         }
         let isMatched = SetGame.checkForSet(firstCard: selectedCards[0], secondCard: selectedCards[1], thirdCard: selectedCards[2])
         if (isMatched) {
-            selectedCards[0].isMatched = true
-            selectedCards[1].isMatched = true
-            selectedCards[2].isMatched = true
+//            selectedCards[0].isMatched = true
+//            selectedCards[1].isMatched = true
+//            selectedCards[2].isMatched = true
+            setCardsStateToMatched()
         }
         return isMatched
+    }
+    
+    func setCardsStateToMatched() {
+        for selectedCardIndex in 0..<selectedCards.count {
+            for gameBoardIndex in 0..<cardsOnGameBoard.count {
+                if cardsOnGameBoard[gameBoardIndex].identifier == selectedCards[selectedCardIndex].identifier {
+                    cardsOnGameBoard[gameBoardIndex].isMatched = true
+                }
+            }
+        }
     }
     
     public static func checkForSet(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
@@ -109,8 +124,17 @@ public class SetGame {
         return deck.popLast() ?? nil
     }
     
-    func dealThreeNewCards() {
-
+    func dealThreeNewCards() -> [Card]{
+        if deck.count >= 3 { // have sufficient cards in the deck to deal
+            let firstCardFromDeck = deck.popLast()!
+            let secondCardFromDeck = deck.popLast()!
+            let thirdCardFromDeck = deck.popLast()!
+            cardsOnGameBoard.append(firstCardFromDeck)
+            cardsOnGameBoard.append(secondCardFromDeck)
+            cardsOnGameBoard.append(thirdCardFromDeck)
+            return [firstCardFromDeck, secondCardFromDeck, thirdCardFromDeck]
+        }
+        return [Card]()
     }
     
     func getASet() -> [Int]? {
@@ -118,9 +142,11 @@ public class SetGame {
             for secondIndex in 0..<cardsOnGameBoard.count {
                 for thirdIndex in 0..<cardsOnGameBoard.count {
                     if firstIndex != secondIndex && secondIndex != thirdIndex && firstIndex != thirdIndex {
-                        if SetGame.checkForSet(firstCard: cardsOnGameBoard[firstIndex], secondCard: cardsOnGameBoard[secondIndex], thirdCard: cardsOnGameBoard[thirdIndex]) {
-                            return [cardsOnGameBoard[firstIndex].identifier, cardsOnGameBoard[secondIndex].identifier, cardsOnGameBoard[thirdIndex].identifier]
+                        if (cardsOnGameBoard[firstIndex].isMatched == false && cardsOnGameBoard[secondIndex].isMatched == false && cardsOnGameBoard[thirdIndex].isMatched == false) {
+                            if SetGame.checkForSet(firstCard: cardsOnGameBoard[firstIndex], secondCard: cardsOnGameBoard[secondIndex], thirdCard: cardsOnGameBoard[thirdIndex]) {
+                                return [cardsOnGameBoard[firstIndex].identifier, cardsOnGameBoard[secondIndex].identifier, cardsOnGameBoard[thirdIndex].identifier]
 
+                            }
                         }
                     }
                 }
