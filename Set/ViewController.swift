@@ -9,12 +9,12 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private let game = SetGame()
+    private var game = SetGame()
     private var selectedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
 //    private var freeButtons  = [UIButton]()
     private var needToDealNewCards = false
-    private var freeButtonIndex = 12 // the new free button index to add a new card to
+    lazy private var freeButtonIndex =  game.numOfCardsOnStart // the new free button index to add a new card to
     
     private var setFound = false
     
@@ -75,6 +75,22 @@ class ViewController: UIViewController {
     }
     
     @IBAction func newGame(_ sender: UIButton) {
+        for button in buttons {
+            button.setAttributedTitle(NSAttributedString(string: "", attributes: nil), for: UIControlState.normal)
+            button.layer.borderWidth = 0
+            button.layer.cornerRadius = 0
+            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            button.tag = -1
+        }
+        initGameBoard()
+        game = SetGame()
+        freeButtonIndex = game.numOfCardsOnStart
+        selectedButtons = [UIButton]()
+        matchedButtons = [UIButton]()
+        needToDealNewCards = false
+        updateUI()
+        
+        
     }
     
     @IBAction func dealCards(_ sender: UIButton) {
@@ -83,7 +99,7 @@ class ViewController: UIViewController {
             if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
                 for matchIndex in 0..<3 { // find the required button in buttons array
                     for buttonIndex in 0..<buttons.count {
-                        if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag {
+                        if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
                             buttons[buttonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])]), for: UIControlState.normal)
                             changeShape(ofButton: buttons[buttonIndex])
                             buttons[buttonIndex].tag = threeNewCards[matchIndex].identifier
@@ -112,6 +128,7 @@ class ViewController: UIViewController {
             sender.isEnabled = false // disable the button as required
         }
         needToDealNewCards = false
+        matchedButtons.removeAll()
         updateUI()
     }
     
@@ -167,14 +184,6 @@ class ViewController: UIViewController {
                     }
                 }
             }
-            
-//            for button in buttons {
-//                if threeSetCards.contains(button.tag) && button.isEnabled == true {
-//                    button.layer.borderWidth = 3.0
-//                    button.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
-//                    button.layer.cornerRadius = 8.0
-//                }
-//            }
         }
         else {
             let alert = UIAlertController(title: "", message: "No available set on the board", preferredStyle: UIAlertControllerStyle.alert)
@@ -183,18 +192,6 @@ class ViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
-//    func dealNewCard() {
-//        // changes all the colors
-//        for button in matchedButtons {
-//            if let cardToAddToGameBoard = game.dealOneCard() {
-//                button.setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[cardToAddToGameBoard.shape]]![cardToAddToGameBoard.shading].string, times: cardToAddToGameBoard.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: cardToAddToGameBoard)]), for: UIControlState.normal)
-//                button.tag = cardToAddToGameBoard.identifier
-//                changeShape(ofButton: button)
-//            }
-//        }
-//        updateUI()
-//    }
     
     func addButtonsToMatchedButtonsArray() {
         matchedButtons.removeAll()

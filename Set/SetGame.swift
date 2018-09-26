@@ -14,7 +14,7 @@ public class SetGame {
     
     let maxGameBoardCapacity = 24
     
-    let deckCapacity = 81
+    lazy var deckCapacity =  numOfDifferentColors * numOfDifferentShapes * numOfDifferentShadings * numOfShapes
     
     var score = 0
     

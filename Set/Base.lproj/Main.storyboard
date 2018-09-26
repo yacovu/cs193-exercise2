@@ -264,7 +264,6 @@
                                 <rect key="frame" x="189" y="55" width="30" height="30"/>
                                 <state key="normal" title="Hint"/>
                                 <connections>
-                                    <action selector="newGame:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IZx-rA-1GE"/>
                                     <action selector="showHint:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rl7-Im-pVk"/>
                                 </connections>
                             </button>
