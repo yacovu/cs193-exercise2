@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     private var selectedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
     private var needToDealNewCards = false
+    private var needToDeselectNotASetSelection = false
     lazy private var freeButtonIndex =  game.numOfCardsOnStart // the new free button index to add a new card to
     
     private var setFound = false
@@ -69,7 +70,17 @@ class ViewController: UIViewController {
     }
     
     @IBAction func showHint(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Are You Sure?", message: "Taking a hint will reduce your score by one point. Continue?", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: {action in self.getAHint()}))
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func getAHint() {
         showHint()
+        game.score -= 1
+        updateUI()
     }
     
     @IBAction func newGame(_ sender: UIButton) {
@@ -87,8 +98,6 @@ class ViewController: UIViewController {
         matchedButtons = [UIButton]()
         needToDealNewCards = false
         updateUI()
-        
-        
     }
     
     @IBAction func dealCards(_ sender: UIButton) {
@@ -108,12 +117,10 @@ class ViewController: UIViewController {
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
                 for index in 0..<3 {
-//                    let freeButtonToAddCardTo = freeButtons[0]
                     buttons[freeButtonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
                     buttons[freeButtonIndex].tag = threeNewCards[index].identifier
                     freeButtonIndex += 1
                     game.cardsOnGameBoard.append(threeNewCards[index])
-//                    freeButtons = Array(freeButtons.dropFirst()) // remove the curent button from freeButtons array
                 }
             }
             else { // gameboard capacity reached to its max. Game over
@@ -145,6 +152,9 @@ class ViewController: UIViewController {
             if needToDealNewCards { // a set was found and now a new card was selected
                 dealCards(sender)
             }
+            if needToDeselectNotASetSelection {
+                deselectNotSetButtons()
+            }
             game.selectCard(atIndex: touchedCardIndex)
             changeShape(ofButton: sender)
             if selectedButtons.count == 3 {
@@ -152,14 +162,28 @@ class ViewController: UIViewController {
                 if setFound {
                     changeCardsShapeToSet()
                     addButtonsToMatchedButtonsArray()
+                    needToDealNewCards = true
                     disableButtons()
+                    game.score += 3
                 }
                 else {
-                    changeCardsShapeToSelected()
+                    changeCardsShapeToNotASet()
+                    needToDeselectNotASetSelection = true
+                    game.score -= 5
                 }
                 selectedButtons.removeAll()
             }
             updateUI()
+        }
+    }
+    
+    func deselectNotSetButtons() {
+        for button in buttons {
+            if button.layer.borderColor == #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1) {
+                button.layer.borderWidth = 0
+                button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                button.layer.cornerRadius = 0
+            }
         }
     }
     
@@ -196,7 +220,6 @@ class ViewController: UIViewController {
         for buttonIndex in 0..<selectedButtons.count {
             matchedButtons.append(selectedButtons[buttonIndex])
         }
-        needToDealNewCards = true
     }
     
     func updateUI() {
@@ -206,17 +229,17 @@ class ViewController: UIViewController {
     
     func changeCardsShapeToSet() {
         for button in selectedButtons {
-            button.layer.borderWidth = 3.0
-            button.layer.borderColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+            button.layer.borderWidth = 5.0
+            button.layer.borderColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
             button.layer.cornerRadius = 8.0
         }
     }
     
-    func changeCardsShapeToSelected() {
+    func changeCardsShapeToNotASet() {
         for button in selectedButtons {
-            button.layer.borderWidth = 0
-            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-            button.layer.cornerRadius = 0
+            button.layer.borderWidth = 3.0
+            button.layer.borderColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+            button.layer.cornerRadius = 8.0
         }
     }
     
@@ -266,7 +289,7 @@ class ViewController: UIViewController {
     }
     
     func changeShape(ofButton button: UIButton) {
-        if button.layer.borderColor == #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) || button.layer.borderColor == #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1){
+        if button.layer.borderColor == #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) || button.layer.borderColor == #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1) {
             button.layer.borderWidth = 3.0
             button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
             button.layer.cornerRadius = 8.0
