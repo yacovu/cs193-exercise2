@@ -29,13 +29,12 @@ public class SetGame {
     
     var selectedCards = [Card]()
     
-//    private var alreadyMatchedCard = [Card]()
-    
     func selectCard(atIndex index: Int) {
         if selectedCards.count == 3 {
             selectedCards.removeAll()
             //add clear color from blue to white
         }
+        //buggggggggg****************
         selectedCards.append(cardsOnGameBoard[index])
     }
     

@@ -91,12 +91,13 @@ class ViewController: UIViewController {
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.tag = -1
         }
-        initGameBoard()
         game = SetGame()
+        initGameBoard()
         freeButtonIndex = game.numOfCardsOnStart
         selectedButtons = [UIButton]()
         matchedButtons = [UIButton]()
         needToDealNewCards = false
+
         updateUI()
     }
     
@@ -132,7 +133,7 @@ class ViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             sender.isEnabled = false // disable the button as required
         }
-        if game.cardsOnGameBoard.count == game.maxGameBoardCapacity {
+        if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
             sender.isEnabled = false
         }
         needToDealNewCards = false
