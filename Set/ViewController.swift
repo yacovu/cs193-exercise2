@@ -5,7 +5,6 @@
 //  Created by Yacov Uziel on 20/09/2018.
 //  Copyright © 2018 Yacov Uziel. All rights reserved.
 //
-
 import UIKit
 
 class ViewController: UIViewController {
@@ -40,19 +39,19 @@ class ViewController: UIViewController {
                                "circle": [blankCircle, semiFilledCircle, fullyCircle]]
     
     
-//    private enum colors {
-//        case Red
-//        case Green
-//        case Blue
-//    }
+    //    private enum colors {
+    //        case Red
+    //        case Green
+    //        case Blue
+    //    }
     
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -60,10 +59,13 @@ class ViewController: UIViewController {
     
     @IBOutlet var buttons: [UIButton]! {
         didSet {
+            for button in buttons {
+                button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            }
             initGameBoard()
         }
     }
-
+    
     @IBAction func showHint(_ sender: UIButton) {
         showHint()
     }
@@ -108,7 +110,7 @@ class ViewController: UIViewController {
         }
     }
     
-
+    
     
     @IBOutlet weak var scoreLabel: UILabel!
     
@@ -225,19 +227,19 @@ class ViewController: UIViewController {
         freeButtons = Array(buttons.dropFirst(12))
     }
     
-        //TODO: change from switch case
+    //TODO: change from switch case
     func getColor (forCard card: Card) ->  UIColor{
         let color = colors[card.color]
         switch color {
-            case "red":
-                return UIColor.red
-            case "green":
-                return UIColor.green
-            default: return UIColor.blue
+        case "red":
+            return UIColor.red
+        case "green":
+            return UIColor.green
+        default: return UIColor.blue
         }
     }
     
-
+    
     func printShape(ofShape shape: String, times numOfTimes: Int) -> String {
         var shapeToPrint = ""
         for _ in 1...numOfTimes {
@@ -260,8 +262,7 @@ class ViewController: UIViewController {
             selectedButtons = selectedButtons.filter {$0 != button}
         }
     }
-
-
-
+    
+    
+    
 }
-

@@ -80,7 +80,7 @@ public class SetGame {
     }
     
     static func haveSameShading(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
-        return firstCard.shading == secondCard.shading && secondCard.shape == thirdCard.shading
+        return firstCard.shading == secondCard.shading && secondCard.shading == thirdCard.shading
     }
 
     static func haveThreeDifferentShadings(firstCard: Card, secondCard: Card, thirdCard: Card) -> Bool {
