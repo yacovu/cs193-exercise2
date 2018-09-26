@@ -97,9 +97,11 @@ class ViewController: UIViewController {
         selectedButtons = [UIButton]()
         matchedButtons = [UIButton]()
         needToDealNewCards = false
-
+        //enable deal 3 cards button
+        
         updateUI()
     }
+    
     
     @IBAction func dealCards(_ sender: UIButton) {
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
@@ -120,6 +122,7 @@ class ViewController: UIViewController {
                 for index in 0..<3 {
                     buttons[freeButtonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
                     buttons[freeButtonIndex].tag = threeNewCards[index].identifier
+                    buttons[freeButtonIndex].isEnabled = true
                     freeButtonIndex += 1
                     game.cardsOnGameBoard.append(threeNewCards[index])
                 }
@@ -156,7 +159,12 @@ class ViewController: UIViewController {
             if needToDeselectNotASetSelection {
                 deselectNotSetButtons()
             }
-            game.selectCard(atIndex: touchedCardIndex)
+            if isSelected(selectedButton: sender) {
+                game.deselectCard(atIndex: touchedCardIndex)
+            }
+            else {
+                game.selectCard(atIndex: touchedCardIndex)
+            }
             changeShape(ofButton: sender)
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
@@ -176,6 +184,10 @@ class ViewController: UIViewController {
             }
             updateUI()
         }
+    }
+    
+    func isSelected(selectedButton button: UIButton) -> Bool {
+        return selectedButtons.contains(button)
     }
     
     func deselectNotSetButtons() {
@@ -265,7 +277,10 @@ class ViewController: UIViewController {
             buttons[cardIndex].tag = card.identifier
             buttons[cardIndex].tag = card.identifier
         }
-//        freeButtons = Array(buttons.dropFirst(12))
+        
+        for buttonIndex in 12..<game.maxGameBoardCapacity {
+            buttons[buttonIndex].isEnabled = false
+        }
     }
     
     //TODO: change from switch case

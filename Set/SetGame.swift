@@ -38,6 +38,14 @@ public class SetGame {
         selectedCards.append(cardsOnGameBoard[index])
     }
     
+    func deselectCard(atIndex index: Int) {
+        for cardIndex in 0..<selectedCards.count {
+            if selectedCards[cardIndex] == cardsOnGameBoard[index] {
+                selectedCards.remove(at: cardIndex)
+            }
+        }
+    }
+    
     func checkForSet() -> Bool {
         if (selectedCards.count != 3) {
             return false
