@@ -40,11 +40,11 @@ class ViewController: UIViewController {
                                "circle": [blankCircle, semiFilledCircle, fullyCircle]]
     
     
-    //    private enum colors {
-    //        case Red
-    //        case Green
-    //        case Blue
-    //    }
+        private enum colorType {
+            case Red
+            case Green
+            case Blue
+        }
     
     
     
@@ -133,7 +133,7 @@ class ViewController: UIViewController {
         }
         else { // insufficient cards in the deck. The button is disabled
             let alert = UIAlertController(title: "Warning!", message: "Cards in the Deck", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.hideMatchSetFromUI()}))
             sender.isEnabled = false // disable the button as required
         }
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
@@ -144,6 +144,11 @@ class ViewController: UIViewController {
         updateUI()
     }
     
+    func hideMatchSetFromUI() {
+        for button in matchedButtons {
+            button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.0302321743)
+        }
+    }
     
     
     @IBOutlet weak var scoreLabel: UILabel!

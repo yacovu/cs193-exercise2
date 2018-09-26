@@ -14,8 +14,9 @@ public class SetGame {
     
     let maxGameBoardCapacity = 24
     
-    lazy var deckCapacity =  numOfDifferentColors * numOfDifferentShapes * numOfDifferentShadings * numOfShapes
+//    lazy var deckCapacity =  numOfDifferentColors * numOfDifferentShapes * numOfDifferentShadings * numOfShapes
     
+    lazy var deckCapacity = 12
     var score = 0
     
     let numOfDifferentColors = 3
@@ -34,7 +35,6 @@ public class SetGame {
             selectedCards.removeAll()
             //add clear color from blue to white
         }
-        //buggggggggg****************
         selectedCards.append(cardsOnGameBoard[index])
     }
     
@@ -151,9 +151,11 @@ public class SetGame {
                     if firstIndex != secondIndex && secondIndex != thirdIndex && firstIndex != thirdIndex {
                         if (cardsOnGameBoard[firstIndex].isMatched == false && cardsOnGameBoard[secondIndex].isMatched == false && cardsOnGameBoard[thirdIndex].isMatched == false) {
                             if SetGame.checkForSet(firstCard: cardsOnGameBoard[firstIndex], secondCard: cardsOnGameBoard[secondIndex], thirdCard: cardsOnGameBoard[thirdIndex]) {
+                                print("set")
                                 return [cardsOnGameBoard[firstIndex].identifier, cardsOnGameBoard[secondIndex].identifier, cardsOnGameBoard[thirdIndex].identifier]
 
                             }
+                            print("not a set")
                         }
                     }
                 }
