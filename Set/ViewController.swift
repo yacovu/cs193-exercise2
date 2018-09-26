@@ -12,7 +12,6 @@ class ViewController: UIViewController {
     private var game = SetGame()
     private var selectedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
-//    private var freeButtons  = [UIButton]()
     private var needToDealNewCards = false
     lazy private var freeButtonIndex =  game.numOfCardsOnStart // the new free button index to add a new card to
     
@@ -57,7 +56,6 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    //when press on hint not 3 cards are highlited
     
     
     @IBOutlet var buttons: [UIButton]! {
@@ -127,6 +125,9 @@ class ViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             sender.isEnabled = false // disable the button as required
         }
+        if game.cardsOnGameBoard.count == game.maxGameBoardCapacity {
+            sender.isEnabled = false
+        }
         needToDealNewCards = false
         matchedButtons.removeAll()
         updateUI()
@@ -141,10 +142,7 @@ class ViewController: UIViewController {
     @IBAction func touchCard(_ sender: UIButton) {
         var setFound = false
         if let touchedCardIndex = buttons.index(of: sender) {
-            // add removeall selected buttons
             if needToDealNewCards { // a set was found and now a new card was selected
-//                matchedButtons.removeAll()
-//                dealNewCard()
                 dealCards(sender)
             }
             game.selectCard(atIndex: touchedCardIndex)
@@ -274,7 +272,6 @@ class ViewController: UIViewController {
             button.layer.cornerRadius = 8.0
             if selectedButtons.count == 3 {
                 selectedButtons.removeAll()
-                // add remove color blue
             }
             selectedButtons.append(button)
         }
