@@ -143,11 +143,9 @@ public class SetGame {
                     if firstIndex != secondIndex && secondIndex != thirdIndex && firstIndex != thirdIndex {
                         if (cardsOnGameBoard[firstIndex].isMatched == false && cardsOnGameBoard[secondIndex].isMatched == false && cardsOnGameBoard[thirdIndex].isMatched == false) {
                             if SetGame.checkForSet(firstCard: cardsOnGameBoard[firstIndex], secondCard: cardsOnGameBoard[secondIndex], thirdCard: cardsOnGameBoard[thirdIndex]) {
-//                                print("set")
                                 return [cardsOnGameBoard[firstIndex].identifier, cardsOnGameBoard[secondIndex].identifier, cardsOnGameBoard[thirdIndex].identifier]
 
                             }
-//                            print("not a set")
                         }
                     }
                 }

@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     private(set) var numberOfShapes = [1,2,3]
     lazy private(set) var shapes = ["diamond", "square", "circle"]
     
-    private let blankDiamond = NSAttributedString(string: "\u{25CA}")
+    let blankDiamond = NSAttributedString(string: "\u{25CA}")
     private let blankSquare = NSAttributedString(string: "\u{25A2}")
     private let blankCircle = NSAttributedString(string: "\u{25EF}")
     
@@ -41,13 +41,19 @@ class ViewController: UIViewController {
                                "square": [blankSquare, semiFilledSquare, fullySquare],
                                "circle": [blankCircle, semiFilledCircle, fullyCircle]]
     
+    enum colorType: Int {
+        case red
+        case green
+        case blue
+    }
     
-        private enum colorType {
-            case Red
-            case Green
-            case Blue
-        }
     
+//    enum colorType: String {
+//        case 0 = "red"
+//        case 1 = "green"
+//        case 2 = "blue"
+//    }
+ 
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +67,6 @@ class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         initGameBoard()
     }
     
@@ -396,18 +401,21 @@ class ViewController: UIViewController {
         }
     }
     
-    //TODO: change from switch case
     func getColor (forCard card: Card) ->  UIColor{
-        let color = colors[card.color]
+        let color = card.color
         switch color {
-        case "red":
+        case colorType.red.rawValue:
             return UIColor.red
-        case "green":
+        case colorType.green.rawValue:
             return UIColor.green
-        default: return UIColor.blue
+        case colorType.blue.rawValue:
+            return UIColor.blue
+        default:
+            return UIColor.black 
+            
         }
     }
-    
+
     
     func printShape(ofShape shape: String, times numOfTimes: Int) -> String {
         var shapeToPrint = ""
@@ -428,6 +436,7 @@ class ViewController: UIViewController {
 }
 
 extension UIButton {
+    
     func setStyleToFreeSpace() {
         self.layer.borderWidth = 0
         self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -458,3 +467,4 @@ extension UIButton {
         self.layer.cornerRadius = 8.0
     }
 }
+
