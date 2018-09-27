@@ -74,8 +74,6 @@ class ViewController: UIViewController {
         }
     }
     
-
-    
     @IBAction func showHint(_ sender: UIButton) {
         let alert = UIAlertController(title: "Are You Sure?", message: "Taking a hint will reduce your score by one point. Continue?", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: {action in self.getAHint()}))
@@ -139,7 +137,6 @@ class ViewController: UIViewController {
                     }
                 }
                 addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
-                //                addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
                 for index in 0..<3 {
@@ -147,12 +144,10 @@ class ViewController: UIViewController {
                     buttons[freeButtonIndex].tag = threeNewCards[index].identifier
                     buttons[freeButtonIndex].isEnabled = true
                     freeButtonIndex += 1
-                    //                    game.cardsOnGameBoard.append(threeNewCards[index])
                 }
                 addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
             else { // gameboard capacity reached to its max. Game over
-//                endGame()
                 needToEndGame = true
             }
         }
@@ -161,13 +156,9 @@ class ViewController: UIViewController {
                 let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
                 self.present(alert, animated: true, completion: nil)
-                sender.isEnabled = false // disable the button as required
-    //            needToEndGame = true
+                dealCard.isEnabled = false // disable the button as required
                 firstTimeDeckEmpty = false
             }
-//            if showThreeMatchedCards() {
-//                endGame()
-//            }
         }
 
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
@@ -215,9 +206,6 @@ class ViewController: UIViewController {
     
     
     func hideMatchSetFromUI() {
-//        for button in matchedButtons {
-//            button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.0302321743)
-//        }
         for button in selectedButtons {
             button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.0302321743)
             button.layer.borderWidth = 0
@@ -229,7 +217,6 @@ class ViewController: UIViewController {
         for selectedButton in selectedButtons {
             for buttonIndex in 0..<buttons.count {
                 if  buttons[buttonIndex] == selectedButton {
-//                    buttons.remove(at: buttonIndex)
                     buttons[buttonIndex].isEnabled = false
                 }
             }
