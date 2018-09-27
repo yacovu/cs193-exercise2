@@ -290,65 +290,6 @@ class ViewController: UIViewController {
         }
     }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-//        if let touchedCardIndex = buttons.index(of: sender) {
-//            if needToDealNewCards { // a set was found and now a new card was selected
-//                dealCardsAndAddToGameBoard(sender) // get three new cards from the deck and adds them to the game board
-//            }
-//            if needToDeselectNotASetSelection {
-//                deselectNotSetButtons()
-//                needToDeselectNotASetSelection = false
-//            }
-//            if isSelected(selectedButton: sender) {
-//                game.deselectCard(atIndex: touchedCardIndex)
-//            }
-//            else {
-//                game.selectCard(atIndex: touchedCardIndex)
-//            }
-//            changeShape(ofButton: sender)
-//            selectedButtons.append(sender)
-//            if selectedButtons.count == 3 {
-//                setFound = game.checkForSet()
-//                if setFound {
-//                    changeCardsShapeToSet()
-//                    addButtonsToMatchedButtonsArray()
-//                    needToDealNewCards = true
-//                    disableButtons()
-//                    game.score += 3
-//                    if game.deck.count == 0 {
-//                        hideMatchSetFromUI()
-//                    }
-//                }
-//                else {
-//                    changeCardsShapeToNotASet()
-//                    needToDeselectNotASetSelection = true
-//                    game.score -= 5
-//                }
-//                selectedButtons.removeAll()
-//            }
-//            updateUI()
-//        }
-//    }
-    
     func isSelected(selectedButton button: UIButton) -> Bool {
         return selectedButtons.contains(button)
     }
@@ -370,12 +311,26 @@ class ViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    func allMatchedCardButtonsAreVisible(threeSetCards: [Int]) -> Bool{
+        for cardIndex in 0..<threeSetCards.count {
+            let cardIdentifier = threeSetCards[cardIndex]
+            for button in buttons {
+                if button.tag == cardIdentifier {
+                    if button.layer.backgroundColor == #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+    
+    
     func showThreeMatchedCards() {
-        //need to check if at least one of the set cards are located in button that not displayed
-        
-        if let threeSetCards = game.getASet() {
-            for cardIndex in 0..<threeSetCards.count {
-                let cardIdentifier = threeSetCards[cardIndex]
+        let threeSetCards = game.getASet()
+        if threeSetCards != nil && allMatchedCardButtonsAreVisible(threeSetCards: threeSetCards!) { // button will become unvisible if deck is empty
+            for cardIndex in 0..<threeSetCards!.count {
+                let cardIdentifier = threeSetCards![cardIndex]
                 for button in buttons {
                     if button.tag == cardIdentifier {
                         button.layer.borderWidth = 3.0
