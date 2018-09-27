@@ -115,9 +115,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var dealCard: UIButton!
     
     @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
-        if needToEndGame {
-            endGame()
-        }
+       checkIfNeedToEnd()
+        
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
             if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
@@ -151,7 +150,7 @@ class ViewController: UIViewController {
         }
         else { // insufficient cards in the deck. The button is disabled
             let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
             self.present(alert, animated: true, completion: nil)
             sender.isEnabled = false // disable the button as required
             needToEndGame = true
@@ -163,6 +162,12 @@ class ViewController: UIViewController {
         needToDealNewCards = false
         matchedButtons.removeAll()
         updateUI()
+    }
+    
+    func checkIfNeedToEnd() {
+        if needToEndGame {
+            endGame()
+        }
     }
 
     func removeThreeOldCardsFromGameBoard(locatedAtButtons buttons: [UIButton]) {
@@ -224,22 +229,35 @@ class ViewController: UIViewController {
     
     @IBAction func touchCard(_ sender: UIButton) {
         var setFound = false
+        
+      checkIfNeedToEnd()
+        
         if let touchedCardIndex = buttons.index(of: sender) {
+            if isSelected(selectedButton: sender) {
+                game.deselectCard(atIndex: touchedCardIndex)
+                for buttonIndex in 0..<selectedButtons.count {
+                    if selectedButtons[buttonIndex] == sender {
+                        selectedButtons.remove(at: buttonIndex)
+                    }
+                }
+            }
+            else {
+                game.selectCard(atIndex: touchedCardIndex)
+                selectedButtons.append(sender)
+            }
+            
             if needToDealNewCards { // a set was found and now a new card was selected
                 dealCardsAndAddToGameBoard(sender) // get three new cards from the deck and adds them to the game board
+                clearButttons()
+                needToDealNewCards = false
             }
             if needToDeselectNotASetSelection {
                 deselectNotSetButtons()
                 needToDeselectNotASetSelection = false
             }
-            if isSelected(selectedButton: sender) {
-                game.deselectCard(atIndex: touchedCardIndex)
-            }
-            else {
-                game.selectCard(atIndex: touchedCardIndex)
-            }
+            
             changeShape(ofButton: sender)
-            selectedButtons.append(sender)
+            
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
                 if setFound {
@@ -262,6 +280,74 @@ class ViewController: UIViewController {
             updateUI()
         }
     }
+        
+        
+    func clearButttons() {
+        for button in buttons {
+            button.layer.borderWidth = 0
+            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            button.layer.cornerRadius = 0
+        }
+    }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+//        if let touchedCardIndex = buttons.index(of: sender) {
+//            if needToDealNewCards { // a set was found and now a new card was selected
+//                dealCardsAndAddToGameBoard(sender) // get three new cards from the deck and adds them to the game board
+//            }
+//            if needToDeselectNotASetSelection {
+//                deselectNotSetButtons()
+//                needToDeselectNotASetSelection = false
+//            }
+//            if isSelected(selectedButton: sender) {
+//                game.deselectCard(atIndex: touchedCardIndex)
+//            }
+//            else {
+//                game.selectCard(atIndex: touchedCardIndex)
+//            }
+//            changeShape(ofButton: sender)
+//            selectedButtons.append(sender)
+//            if selectedButtons.count == 3 {
+//                setFound = game.checkForSet()
+//                if setFound {
+//                    changeCardsShapeToSet()
+//                    addButtonsToMatchedButtonsArray()
+//                    needToDealNewCards = true
+//                    disableButtons()
+//                    game.score += 3
+//                    if game.deck.count == 0 {
+//                        hideMatchSetFromUI()
+//                    }
+//                }
+//                else {
+//                    changeCardsShapeToNotASet()
+//                    needToDeselectNotASetSelection = true
+//                    game.score -= 5
+//                }
+//                selectedButtons.removeAll()
+//            }
+//            updateUI()
+//        }
+//    }
     
     func isSelected(selectedButton button: UIButton) -> Bool {
         return selectedButtons.contains(button)
@@ -285,6 +371,8 @@ class ViewController: UIViewController {
     }
     
     func showThreeMatchedCards() {
+        //need to check if at least one of the set cards are located in button that not displayed
+        
         if let threeSetCards = game.getASet() {
             for cardIndex in 0..<threeSetCards.count {
                 let cardIdentifier = threeSetCards[cardIndex]
@@ -386,16 +474,16 @@ class ViewController: UIViewController {
             button.layer.borderWidth = 3.0
             button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
             button.layer.cornerRadius = 8.0
-            if selectedButtons.count == 3 {
-                selectedButtons.removeAll()
-            }
+//            if selectedButtons.count == 3 {
+//                selectedButtons.removeAll()
+//            }
 //            selectedButtons.append(button)
         }
-        else if button.layer.borderColor == #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1) {
+        else {
             button.layer.borderWidth = 0
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.layer.cornerRadius = 0
-            selectedButtons = selectedButtons.filter {$0 != button}
+//            selectedButtons = selectedButtons.filter {$0 != button}
         }
     }
     
