@@ -298,9 +298,7 @@ class ViewController: UIViewController {
     func deselectNotSetButtons() {
         for button in buttons {
             if button.layer.borderColor == #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1) {
-                button.layer.borderWidth = 0
-                button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-                button.layer.cornerRadius = 0
+                button.setStyleToFreeSpace()
             }
         }
     }
@@ -334,9 +332,7 @@ class ViewController: UIViewController {
                 let cardIdentifier = threeSetCards![cardIndex]
                 for button in buttons {
                     if button.tag == cardIdentifier {
-                        button.layer.borderWidth = 3.0
-                        button.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
-                        button.layer.cornerRadius = 8.0
+                        button.setStyleToHint()
                     }
                 }
             }
@@ -363,17 +359,13 @@ class ViewController: UIViewController {
     
     func changeCardsShapeToSet() {
         for button in selectedButtons {
-            button.layer.borderWidth = 5.0
-            button.layer.borderColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
-            button.layer.cornerRadius = 8.0
+            button.setStyleToGoodSetGuess()
         }
     }
     
     func changeCardsShapeToNotASet() {
         for button in selectedButtons {
-            button.layer.borderWidth = 3.0
-            button.layer.borderColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-            button.layer.cornerRadius = 8.0
+            button.setStyleToWrongSetGuess()
         }
     }
     
@@ -427,22 +419,42 @@ class ViewController: UIViewController {
     
     func changeShape(ofButton button: UIButton) {
         if button.layer.borderColor == #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) || button.layer.borderColor == #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1) {
-            button.layer.borderWidth = 3.0
-            button.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
-            button.layer.cornerRadius = 8.0
-//            if selectedButtons.count == 3 {
-//                selectedButtons.removeAll()
-//            }
-//            selectedButtons.append(button)
+            button.setStyleToClicked()
         }
         else {
-            button.layer.borderWidth = 0
-            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-            button.layer.cornerRadius = 0
-//            selectedButtons = selectedButtons.filter {$0 != button}
+            button.setStyleToFreeSpace()
         }
     }
+}
+
+extension UIButton {
+    func setStyleToFreeSpace() {
+        self.layer.borderWidth = 0
+        self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        self.layer.cornerRadius = 0
+    }
     
+    func setStyleToClicked() {
+        self.layer.borderWidth = 3.0
+        self.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
+        self.layer.cornerRadius = 8.0
+    }
     
+    func setStyleToHint() {
+        self.layer.borderWidth = 3.0
+        self.layer.borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+        self.layer.cornerRadius = 8.0
+    }
     
+    func setStyleToGoodSetGuess() {
+        self.layer.borderWidth = 3.0
+        self.layer.borderColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
+        self.layer.cornerRadius = 8.0
+    }
+    
+    func setStyleToWrongSetGuess() {
+        self.layer.borderWidth = 3.0
+        self.layer.borderColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        self.layer.cornerRadius = 8.0
+    }
 }
