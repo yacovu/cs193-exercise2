@@ -250,7 +250,7 @@
                                 <rect key="frame" x="16" y="55" width="128" height="30"/>
                                 <state key="normal" title="Deal 3 More Cards"/>
                                 <connections>
-                                    <action selector="dealCards:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0ck-qJ-WsN"/>
+                                    <action selector="dealCardsAndAddToGameBoard:" destination="BYZ-38-t0r" eventType="touchUpInside" id="36x-8M-x9U"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zr3-vK-KkG">
@@ -305,6 +305,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="dealCard" destination="SAd-2q-Eam" id="O4m-qf-ATh"/>
                         <outlet property="deckLabel" destination="8xm-Mz-G9t" id="iqg-Ge-7ne"/>
                         <outlet property="scoreLabel" destination="Htr-On-fv4" id="LPX-k1-JzP"/>
                         <outletCollection property="buttons" destination="eKt-x7-Ayq" collectionClass="NSMutableArray" id="DlD-vq-vnE"/>

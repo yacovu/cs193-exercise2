@@ -18,6 +18,8 @@ class ViewController: UIViewController {
     
     private var setFound = false
     
+    private var needToEndGame = false
+    
     private(set) var colors = ["red", "green", "blue"]
     private(set) var shading = ["blank","semiFilled","fullyFilled"]
     private(set) var numberOfShapes = [1,2,3]
@@ -47,7 +49,6 @@ class ViewController: UIViewController {
         }
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -58,6 +59,12 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        initGameBoard()
+    }
+    
     
     @IBOutlet var buttons: [UIButton]! {
         didSet {
@@ -65,9 +72,10 @@ class ViewController: UIViewController {
                 button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
                 button.tag = -1
             }
-            initGameBoard()
         }
     }
+    
+
     
     @IBAction func showHint(_ sender: UIButton) {
         let alert = UIAlertController(title: "Are You Sure?", message: "Taking a hint will reduce your score by one point. Continue?", preferredStyle: UIAlertControllerStyle.alert)
@@ -78,7 +86,7 @@ class ViewController: UIViewController {
     }
     
     func getAHint() {
-        showHint()
+        showThreeMatchedCards()
         game.score -= 1
         updateUI()
     }
@@ -89,7 +97,9 @@ class ViewController: UIViewController {
             button.layer.borderWidth = 0
             button.layer.cornerRadius = 0
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.tag = -1
+            button.isEnabled = true
         }
         game = SetGame()
         initGameBoard()
@@ -97,13 +107,17 @@ class ViewController: UIViewController {
         selectedButtons = [UIButton]()
         matchedButtons = [UIButton]()
         needToDealNewCards = false
-        //enable deal 3 cards button
+        dealCard.isEnabled = true //enable deal 3 cards button
         
         updateUI()
     }
     
+    @IBOutlet weak var dealCard: UIButton!
     
     @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
+        if needToEndGame {
+            endGame()
+        }
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
             if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
@@ -119,7 +133,7 @@ class ViewController: UIViewController {
                     }
                 }
                 addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
-//                addThreeNewCardsToGameBoard(threeCards: threeNewCards)
+                //                addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
                 for index in 0..<3 {
@@ -127,7 +141,7 @@ class ViewController: UIViewController {
                     buttons[freeButtonIndex].tag = threeNewCards[index].identifier
                     buttons[freeButtonIndex].isEnabled = true
                     freeButtonIndex += 1
-//                    game.cardsOnGameBoard.append(threeNewCards[index])
+                    //                    game.cardsOnGameBoard.append(threeNewCards[index])
                 }
                 addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
@@ -136,12 +150,13 @@ class ViewController: UIViewController {
             }
         }
         else { // insufficient cards in the deck. The button is disabled
-            let alert = UIAlertController(title: "Warning!", message: "Cards in the Deck", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.hideMatchSetFromUI()}))
+            let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             sender.isEnabled = false // disable the button as required
+            needToEndGame = true
         }
-        
+
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
             sender.isEnabled = false
         }
@@ -149,7 +164,7 @@ class ViewController: UIViewController {
         matchedButtons.removeAll()
         updateUI()
     }
-    
+
     func removeThreeOldCardsFromGameBoard(locatedAtButtons buttons: [UIButton]) {
         for button in buttons {
             var found = false
@@ -160,6 +175,7 @@ class ViewController: UIViewController {
                 }
             }
         }
+
     }
     
     func addThreeNewCardsToGameBoard(threeCards cardsToAdd: [Card]) {
@@ -167,16 +183,6 @@ class ViewController: UIViewController {
             game.cardsOnGameBoard.append(card)
         }
     }
-    
-//    func addThreeNewCardsToSamePlaces(threeOldCardsPlaces: [UIButton], threeCardsToAdd: [Card]) {
-//        for buttonIndex in 0..<threeOldCardsPlaces.count {
-//            for cardIndex in 0..<game.cardsOnGameBoard.count {
-//                if game.cardsOnGameBoard[cardIndex].identifier == buttons[buttonIndex].tag {
-//                    game.cardsOnGameBoard[cardIndex] = threeCardsToAdd[buttonIndex]
-//                }
-//            }
-//        }
-//    }
     
     func addThreeNewCardsToSamePlaces(threeOldCardsPlaces: [Int], threeCardsToAdd: [Card]) {
         for buttonIndex in 0..<threeOldCardsPlaces.count {
@@ -190,8 +196,24 @@ class ViewController: UIViewController {
     
     
     func hideMatchSetFromUI() {
-        for button in matchedButtons {
+//        for button in matchedButtons {
+//            button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.0302321743)
+//        }
+        for button in selectedButtons {
             button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.0302321743)
+            button.layer.borderWidth = 0
+            button.layer.cornerRadius = 0
+            button.setAttributedTitle(NSAttributedString(string: ""), for: UIControlState.normal)
+            button.isEnabled = false
+        }
+        
+        for selectedButton in selectedButtons {
+            for buttonIndex in 0..<buttons.count {
+                if  buttons[buttonIndex] == selectedButton {
+//                    buttons.remove(at: buttonIndex)
+                    buttons[buttonIndex].isEnabled = false
+                }
+            }
         }
     }
     
@@ -203,12 +225,12 @@ class ViewController: UIViewController {
     @IBAction func touchCard(_ sender: UIButton) {
         var setFound = false
         if let touchedCardIndex = buttons.index(of: sender) {
-//            print("\(buttons[touchedCardIndex].tag)")
             if needToDealNewCards { // a set was found and now a new card was selected
                 dealCardsAndAddToGameBoard(sender) // get three new cards from the deck and adds them to the game board
             }
             if needToDeselectNotASetSelection {
                 deselectNotSetButtons()
+                needToDeselectNotASetSelection = false
             }
             if isSelected(selectedButton: sender) {
                 game.deselectCard(atIndex: touchedCardIndex)
@@ -216,7 +238,8 @@ class ViewController: UIViewController {
             else {
                 game.selectCard(atIndex: touchedCardIndex)
             }
-            changeShape(ofButton: sender) //addds element
+            changeShape(ofButton: sender)
+            selectedButtons.append(sender)
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
                 if setFound {
@@ -225,7 +248,9 @@ class ViewController: UIViewController {
                     needToDealNewCards = true
                     disableButtons()
                     game.score += 3
-//                    removeThreeOldCardsFromGameBoard(locatedAtButtons: selectedButtons)
+                    if game.deck.count == 0 {
+                        hideMatchSetFromUI()
+                    }
                 }
                 else {
                     changeCardsShapeToNotASet()
@@ -259,7 +284,7 @@ class ViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func showHint() {
+    func showThreeMatchedCards() {
         if let threeSetCards = game.getASet() {
             for cardIndex in 0..<threeSetCards.count {
                 let cardIdentifier = threeSetCards[cardIndex]
@@ -364,9 +389,9 @@ class ViewController: UIViewController {
             if selectedButtons.count == 3 {
                 selectedButtons.removeAll()
             }
-            selectedButtons.append(button)
+//            selectedButtons.append(button)
         }
-        else {
+        else if button.layer.borderColor == #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1) {
             button.layer.borderWidth = 0
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.layer.cornerRadius = 0
