@@ -100,6 +100,7 @@ class ViewController: UIViewController {
             button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.tag = -1
             button.isEnabled = true
+            needToEndGame = false
         }
         game = SetGame()
         initGameBoard()
@@ -289,7 +290,7 @@ class ViewController: UIViewController {
             button.layer.cornerRadius = 0
         }
     }
-        
+    
     func isSelected(selectedButton button: UIButton) -> Bool {
         return selectedButtons.contains(button)
     }
