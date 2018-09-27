@@ -31,7 +31,6 @@ public class SetGame {
     func selectCard(atIndex index: Int) {
         if selectedCards.count == 3 {
             selectedCards.removeAll()
-            //add clear color from blue to white
         }
         selectedCards.append(cardsOnGameBoard[index])
     }
@@ -50,9 +49,6 @@ public class SetGame {
         }
         let isMatched = SetGame.checkForSet(firstCard: selectedCards[0], secondCard: selectedCards[1], thirdCard: selectedCards[2])
         if (isMatched) {
-//            selectedCards[0].isMatched = true
-//            selectedCards[1].isMatched = true
-//            selectedCards[2].isMatched = true
             setCardsStateToMatched()
         }
         return isMatched
@@ -134,9 +130,6 @@ public class SetGame {
             let firstCardFromDeck = deck.popLast()!
             let secondCardFromDeck = deck.popLast()!
             let thirdCardFromDeck = deck.popLast()!
-//            cardsOnGameBoard.append(firstCardFromDeck)
-//            cardsOnGameBoard.append(secondCardFromDeck)
-//            cardsOnGameBoard.append(thirdCardFromDeck)
             return [firstCardFromDeck, secondCardFromDeck, thirdCardFromDeck]
         }
         return [Card]()
@@ -149,11 +142,11 @@ public class SetGame {
                     if firstIndex != secondIndex && secondIndex != thirdIndex && firstIndex != thirdIndex {
                         if (cardsOnGameBoard[firstIndex].isMatched == false && cardsOnGameBoard[secondIndex].isMatched == false && cardsOnGameBoard[thirdIndex].isMatched == false) {
                             if SetGame.checkForSet(firstCard: cardsOnGameBoard[firstIndex], secondCard: cardsOnGameBoard[secondIndex], thirdCard: cardsOnGameBoard[thirdIndex]) {
-                                print("set")
+//                                print("set")
                                 return [cardsOnGameBoard[firstIndex].identifier, cardsOnGameBoard[secondIndex].identifier, cardsOnGameBoard[thirdIndex].identifier]
 
                             }
-                            print("not a set")
+//                            print("not a set")
                         }
                     }
                 }

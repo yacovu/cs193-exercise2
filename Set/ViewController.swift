@@ -103,10 +103,11 @@ class ViewController: UIViewController {
     }
     
     
-    @IBAction func dealCards(_ sender: UIButton) {
+    @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
             if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
+                let threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
                 for matchIndex in 0..<3 { // find the required button in buttons array
                     for buttonIndex in 0..<buttons.count {
                         if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
@@ -117,6 +118,8 @@ class ViewController: UIViewController {
                         }
                     }
                 }
+                addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
+//                addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
                 for index in 0..<3 {
@@ -124,8 +127,9 @@ class ViewController: UIViewController {
                     buttons[freeButtonIndex].tag = threeNewCards[index].identifier
                     buttons[freeButtonIndex].isEnabled = true
                     freeButtonIndex += 1
-                    game.cardsOnGameBoard.append(threeNewCards[index])
+//                    game.cardsOnGameBoard.append(threeNewCards[index])
                 }
+                addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
             else { // gameboard capacity reached to its max. Game over
                 endGame()
@@ -134,8 +138,10 @@ class ViewController: UIViewController {
         else { // insufficient cards in the deck. The button is disabled
             let alert = UIAlertController(title: "Warning!", message: "Cards in the Deck", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.hideMatchSetFromUI()}))
+            self.present(alert, animated: true, completion: nil)
             sender.isEnabled = false // disable the button as required
         }
+        
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
             sender.isEnabled = false
         }
@@ -143,6 +149,45 @@ class ViewController: UIViewController {
         matchedButtons.removeAll()
         updateUI()
     }
+    
+    func removeThreeOldCardsFromGameBoard(locatedAtButtons buttons: [UIButton]) {
+        for button in buttons {
+            var found = false
+            for cardIndex in 0..<game.cardsOnGameBoard.count where !found {
+                if game.cardsOnGameBoard[cardIndex].identifier == button.tag {
+                    game.cardsOnGameBoard.remove(at: cardIndex)
+                    found = true
+                }
+            }
+        }
+    }
+    
+    func addThreeNewCardsToGameBoard(threeCards cardsToAdd: [Card]) {
+        for card in cardsToAdd {
+            game.cardsOnGameBoard.append(card)
+        }
+    }
+    
+//    func addThreeNewCardsToSamePlaces(threeOldCardsPlaces: [UIButton], threeCardsToAdd: [Card]) {
+//        for buttonIndex in 0..<threeOldCardsPlaces.count {
+//            for cardIndex in 0..<game.cardsOnGameBoard.count {
+//                if game.cardsOnGameBoard[cardIndex].identifier == buttons[buttonIndex].tag {
+//                    game.cardsOnGameBoard[cardIndex] = threeCardsToAdd[buttonIndex]
+//                }
+//            }
+//        }
+//    }
+    
+    func addThreeNewCardsToSamePlaces(threeOldCardsPlaces: [Int], threeCardsToAdd: [Card]) {
+        for buttonIndex in 0..<threeOldCardsPlaces.count {
+            for cardIndex in 0..<game.cardsOnGameBoard.count {
+                if game.cardsOnGameBoard[cardIndex].identifier == threeOldCardsPlaces[buttonIndex] {
+                    game.cardsOnGameBoard[cardIndex] = threeCardsToAdd[buttonIndex]
+                }
+            }
+        }
+    }
+    
     
     func hideMatchSetFromUI() {
         for button in matchedButtons {
@@ -158,8 +203,9 @@ class ViewController: UIViewController {
     @IBAction func touchCard(_ sender: UIButton) {
         var setFound = false
         if let touchedCardIndex = buttons.index(of: sender) {
+//            print("\(buttons[touchedCardIndex].tag)")
             if needToDealNewCards { // a set was found and now a new card was selected
-                dealCards(sender)
+                dealCardsAndAddToGameBoard(sender) // get three new cards from the deck and adds them to the game board
             }
             if needToDeselectNotASetSelection {
                 deselectNotSetButtons()
@@ -170,7 +216,7 @@ class ViewController: UIViewController {
             else {
                 game.selectCard(atIndex: touchedCardIndex)
             }
-            changeShape(ofButton: sender)
+            changeShape(ofButton: sender) //addds element
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
                 if setFound {
@@ -179,6 +225,7 @@ class ViewController: UIViewController {
                     needToDealNewCards = true
                     disableButtons()
                     game.score += 3
+//                    removeThreeOldCardsFromGameBoard(locatedAtButtons: selectedButtons)
                 }
                 else {
                     changeCardsShapeToNotASet()
@@ -228,7 +275,7 @@ class ViewController: UIViewController {
         else {
             let alert = UIAlertController(title: "", message: "No available set on the board", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-            alert.addAction(UIAlertAction(title: "Deal 3 More Cards", style: UIAlertActionStyle.default, handler: {action in self.dealCards(UIButton())}))
+            alert.addAction(UIAlertAction(title: "Deal 3 More Cards", style: UIAlertActionStyle.default, handler: {action in self.dealCardsAndAddToGameBoard(UIButton())}))
             self.present(alert, animated: true, completion: nil)
         }
     }
