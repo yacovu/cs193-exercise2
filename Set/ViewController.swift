@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     lazy private var freeButtonIndex =  game.numOfCardsOnStart // the new free button index to add a new card to
     
     private var setFound = false
+    private var firstTimeDeckEmpty = true
     
     private var needToEndGame = false
     
@@ -46,13 +47,6 @@ class ViewController: UIViewController {
         case green
         case blue
     }
-    
-    
-//    enum colorType: String {
-//        case 0 = "red"
-//        case 1 = "green"
-//        case 2 = "blue"
-//    }
  
     
     override func viewDidLoad() {
@@ -97,6 +91,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func newGame(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Starting a New Game", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: {action in self.startNewGame()}))
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func startNewGame() {
         for button in buttons {
             button.setAttributedTitle(NSAttributedString(string: "", attributes: nil), for: UIControlState.normal)
             button.layer.borderWidth = 0
@@ -151,15 +152,22 @@ class ViewController: UIViewController {
                 addThreeNewCardsToGameBoard(threeCards: threeNewCards)
             }
             else { // gameboard capacity reached to its max. Game over
-                endGame()
+//                endGame()
+                needToEndGame = true
             }
         }
         else { // insufficient cards in the deck. The button is disabled
-            let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
-            self.present(alert, animated: true, completion: nil)
-            sender.isEnabled = false // disable the button as required
-            needToEndGame = true
+            if firstTimeDeckEmpty {
+                let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
+                self.present(alert, animated: true, completion: nil)
+                sender.isEnabled = false // disable the button as required
+    //            needToEndGame = true
+                firstTimeDeckEmpty = false
+            }
+//            if showThreeMatchedCards() {
+//                endGame()
+//            }
         }
 
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
@@ -240,10 +248,12 @@ class ViewController: UIViewController {
         
         if let touchedCardIndex = buttons.index(of: sender) {
             if isSelected(selectedButton: sender) {
+                var deleted = false
                 game.deselectCard(atIndex: touchedCardIndex)
-                for buttonIndex in 0..<selectedButtons.count {
+                for buttonIndex in 0..<selectedButtons.count where !deleted {
                     if selectedButtons[buttonIndex] == sender {
                         selectedButtons.remove(at: buttonIndex)
+                        deleted = true
                     }
                 }
             }
@@ -275,6 +285,9 @@ class ViewController: UIViewController {
                     if game.deck.count == 0 {
                         hideMatchSetFromUI()
                     }
+                    if game.cardsOnGameBoard.count == 0 {
+                        winGame()
+                    }
                 }
                 else {
                     changeCardsShapeToNotASet()
@@ -286,6 +299,13 @@ class ViewController: UIViewController {
             updateUI()
         }
     }
+    
+    func winGame() {
+        let alert = UIAlertController(title: "Game Over", message: "Congratulations, You Won!", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
+        alert.addAction(UIAlertAction(title: "New Game", style: UIAlertActionStyle.default, handler: {action in self.newGame(UIButton())}))
+        self.present(alert, animated: true, completion: nil)
+    }
         
         
     func clearButttons() {
@@ -293,6 +313,7 @@ class ViewController: UIViewController {
             button.layer.borderWidth = 0
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.layer.cornerRadius = 0
+            button.isEnabled = true
         }
     }
     
@@ -343,6 +364,9 @@ class ViewController: UIViewController {
             }
         }
         else {
+            if game.deck.count == 0 {
+                endGame()
+            }
             let alert = UIAlertController(title: "", message: "No available set on the board", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             alert.addAction(UIAlertAction(title: "Deal 3 More Cards", style: UIAlertActionStyle.default, handler: {action in self.dealCardsAndAddToGameBoard(UIButton())}))
@@ -456,7 +480,7 @@ extension UIButton {
     }
     
     func setStyleToGoodSetGuess() {
-        self.layer.borderWidth = 3.0
+        self.layer.borderWidth = 5.0
         self.layer.borderColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
         self.layer.cornerRadius = 8.0
     }

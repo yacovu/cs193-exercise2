@@ -37,15 +37,17 @@ public class SetGame {
     }
     
     func deselectCard(atIndex index: Int) {
-        for cardIndex in 0..<selectedCards.count {
+        var deleted = false
+        for cardIndex in 0..<selectedCards.count where !deleted {
             if selectedCards[cardIndex] == cardsOnGameBoard[index] {
                 selectedCards.remove(at: cardIndex)
+                deleted = true
             }
         }
     }
     
     func checkForSet() -> Bool {
-        if (selectedCards.count != 3) {
+        if selectedCards.count != 3 {
             return false
         }
         let isMatched = SetGame.checkForSet(firstCard: selectedCards[0], secondCard: selectedCards[1], thirdCard: selectedCards[2])
