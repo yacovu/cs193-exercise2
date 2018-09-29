@@ -300,7 +300,6 @@ class ViewController: UIViewController {
             button.layer.borderWidth = 0
             button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.layer.cornerRadius = 0
-            button.isEnabled = true
         }
     }
     
