@@ -47,12 +47,6 @@ class ViewController: UIViewController {
         case green
         case blue
     }
-    
-    enum buttonStatus: Int {
-        case selected
-        case notSelected
-        case hint
-    }
  
     
     override func viewDidLoad() {
@@ -252,7 +246,6 @@ class ViewController: UIViewController {
                 }
             }
             else {
-//                game.selectCard(atIndex: touchedCardIndex)
                 game.selectCard(atIndex: buttons[touchedCardIndex].tag)
                 selectedButtons.append(sender)
             }
@@ -290,7 +283,6 @@ class ViewController: UIViewController {
                     needToDeselectNotASetSelection = true
                     
                     game.score -= 5
-//                    changeScore(playerChoice: {return false})
                 }
                 selectedButtons.removeAll()
             }
@@ -298,7 +290,6 @@ class ViewController: UIViewController {
         }
     }
     
-    //returns button's border color
     func getStyle(ofButton button: UIButton) -> CGColor? {
         return button.layer.borderColor
     }
@@ -339,9 +330,6 @@ class ViewController: UIViewController {
     
     func deselectNotSetButtons() {
         for button in buttons {
-//            if button.layer.borderColor == #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1) {
-//                button.setStyleToFreeSpace()
-//            }
             button.setNewStyle(to: getStyle)
         }
     }

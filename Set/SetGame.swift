@@ -33,7 +33,7 @@ public class SetGame {
         if selectedCards.count == 3 {
             selectedCards.removeAll()
         }
-//        selectedCards.append(cardsOnGameBoard[index])
+        
         for card in cardsOnGameBoard {
             if card.identifier == index {
                 selectedCards.append(card)
