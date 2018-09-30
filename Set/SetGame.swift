@@ -120,10 +120,6 @@ public class SetGame {
                 && secondCard.color != thirdCard.color
     }
     
-    func getCurrentDeckCapacity() -> Int {
-        return deck.count
-    }
-    
     func dealOneCard() -> Card? {
         return deck.popLast() ?? nil
     }

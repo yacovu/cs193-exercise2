@@ -62,6 +62,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         initGameBoard()
+        
     }
     
     
@@ -397,6 +398,7 @@ class ViewController: UIViewController {
     func initGameBoard() {
         for cardIndex in 0..<game.numOfCardsOnStart {
             game.cardsOnGameBoard.append(game.deck[cardIndex])
+            game.deck.remove(at: cardIndex)
             let card = game.cardsOnGameBoard[cardIndex]
             let shape = shapes[card.shape]
             let shade = shapeToShading[shape]![card.shading]
