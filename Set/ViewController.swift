@@ -47,6 +47,12 @@ class ViewController: UIViewController {
         case green
         case blue
     }
+    
+    enum buttonStatus: Int {
+        case selected
+        case notSelected
+        case hint
+    }
  
     
     override func viewDidLoad() {
@@ -282,7 +288,9 @@ class ViewController: UIViewController {
                 else {
                     changeCardsShapeToNotASet()
                     needToDeselectNotASetSelection = true
+                    
                     game.score -= 5
+//                    changeScore(playerChoice: {return false})
                 }
                 selectedButtons.removeAll()
             }
@@ -290,8 +298,12 @@ class ViewController: UIViewController {
         }
     }
     
+    //returns button's border color
+    func getStyle(ofButton button: UIButton) -> CGColor? {
+        return button.layer.borderColor
+    }
+    
     func removeMatchSetFromGameBoard() {
-        
         for button in selectedButtons {
             var found = false
             for cardIndex in 0..<game.cardsOnGameBoard.count where !found {
@@ -327,9 +339,10 @@ class ViewController: UIViewController {
     
     func deselectNotSetButtons() {
         for button in buttons {
-            if button.layer.borderColor == #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1) {
-                button.setStyleToFreeSpace()
-            }
+//            if button.layer.borderColor == #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1) {
+//                button.setStyleToFreeSpace()
+//            }
+            button.setNewStyle(to: getStyle)
         }
     }
     
@@ -453,16 +466,31 @@ class ViewController: UIViewController {
     }
     
     func changeShape(ofButton button: UIButton) {
-        if button.layer.borderColor == #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) || button.layer.borderColor == #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1) {
-            button.setStyleToClicked()
-        }
-        else {
-            button.setStyleToFreeSpace()
-        }
+        button.setNewStyle(to: getStyle)
     }
 }
 
 extension UIButton {
+    
+    func setNewStyle(to res: (UIButton) -> CGColor?) {
+        switch res(self) {
+        case #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1):
+            self.layer.borderWidth = 3.0
+            self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            self.layer.cornerRadius = 8.0
+        case #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1):
+            self.layer.borderWidth = 3.0
+            self.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
+            self.layer.cornerRadius = 8.0
+        case #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1):
+            self.layer.borderWidth = 3.0
+            self.layer.borderColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
+            self.layer.cornerRadius = 8.0
+        default:
+            self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        }
+    }
+    
     
     func setStyleToFreeSpace() {
         self.layer.borderWidth = 0
