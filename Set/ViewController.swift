@@ -130,10 +130,10 @@ class ViewController: UIViewController {
                 for matchIndex in 0..<3 { // find the required button in buttons array
                     for buttonIndex in 0..<buttons.count {
                         if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
-                            buttons[buttonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])]), for: UIControlState.normal)
+                            let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
+                            let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
+                            buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
                             changeShape(ofButton: buttons[buttonIndex])
-                            buttons[buttonIndex].tag = threeNewCards[matchIndex].identifier
-                            buttons[buttonIndex].isEnabled = true
                         }
                     }
                 }
@@ -141,9 +141,9 @@ class ViewController: UIViewController {
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
                 for index in 0..<3 {
-                    buttons[freeButtonIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])]), for: UIControlState.normal)
-                    buttons[freeButtonIndex].tag = threeNewCards[index].identifier
-                    buttons[freeButtonIndex].isEnabled = true
+                    let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1)
+                    let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])])
+                    buttons.setButton(atIndex: freeButtonIndex, tag: threeNewCards[index].identifier, attributedString: attString, for: UIControlState.normal)
                     freeButtonIndex += 1
                 }
                 addThreeNewCardsToGameBoard(threeCards: threeNewCards)
@@ -420,17 +420,12 @@ class ViewController: UIViewController {
             game.deck.remove(at: cardIndex)
             let card = game.cardsOnGameBoard[cardIndex]
             let shape = shapes[card.shape]
-            let shade = shapeToShading[shape]![card.shading]
+            
+            let shade = printShape(ofShape: shapeToShading[shape]![card.shading].string, times: card.numOfShapes + 1)
             let foregroundColor = getColor(forCard: card)
-            buttons[cardIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shade.string, times: card.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : foregroundColor]), for: UIControlState.normal)
-            buttons[cardIndex].tag = card.identifier
-            buttons[cardIndex].tag = card.identifier
-            buttons[cardIndex].isEnabled = true
+            let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : foregroundColor])
+            buttons.setButton(atIndex: cardIndex, tag: card.identifier, attributedString: attString, for: UIControlState.normal)
         }
-        
-//        for buttonIndex in 12..<game.maxGameBoardCapacity {
-//            buttons[buttonIndex].isEnabled = false
-//        }
     }
     
     func getColor (forCard card: Card) ->  UIColor{
@@ -505,6 +500,12 @@ extension Array where Element:UIButton {
         for element in self {
             element.isEnabled = false
         }
+    }
+    
+    func setButton(atIndex cardIndex: Int, tag buttonTag: Int, attributedString attribute: NSAttributedString, for controlState: UIControlState) {
+        self[cardIndex].setAttributedTitle(attribute, for: controlState)
+        self[cardIndex].tag = buttonTag
+        self[cardIndex].isEnabled = true
     }
 }
 
