@@ -413,6 +413,8 @@ class ViewController: UIViewController {
     }
     
     func initGameBoard() {
+        buttons.disableAllElements()
+        
         for cardIndex in 0..<game.numOfCardsOnStart {
             game.cardsOnGameBoard.append(game.deck[cardIndex])
             game.deck.remove(at: cardIndex)
@@ -423,11 +425,12 @@ class ViewController: UIViewController {
             buttons[cardIndex].setAttributedTitle(NSAttributedString(string: printShape(ofShape: shade.string, times: card.numOfShapes + 1), attributes: [NSAttributedStringKey.foregroundColor : foregroundColor]), for: UIControlState.normal)
             buttons[cardIndex].tag = card.identifier
             buttons[cardIndex].tag = card.identifier
+            buttons[cardIndex].isEnabled = true
         }
         
-        for buttonIndex in 12..<game.maxGameBoardCapacity {
-            buttons[buttonIndex].isEnabled = false
-        }
+//        for buttonIndex in 12..<game.maxGameBoardCapacity {
+//            buttons[buttonIndex].isEnabled = false
+//        }
     }
     
     func getColor (forCard card: Card) ->  UIColor{
@@ -494,6 +497,14 @@ extension UIButton {
         self.layer.borderWidth = 3.0
         self.layer.borderColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         self.layer.cornerRadius = 8.0
+    }
+}
+
+extension Array where Element:UIButton {
+    func disableAllElements() {
+        for element in self {
+            element.isEnabled = false
+        }
     }
 }
 
