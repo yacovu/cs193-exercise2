@@ -246,7 +246,8 @@ class ViewController: UIViewController {
                 }
             }
             else {
-                game.selectCard(atIndex: touchedCardIndex)
+//                game.selectCard(atIndex: touchedCardIndex)
+                game.selectCard(atIndex: buttons[touchedCardIndex].tag)
                 selectedButtons.append(sender)
             }
             
@@ -272,6 +273,7 @@ class ViewController: UIViewController {
                     game.score += 3
                     if game.deck.count == 0 {
                         hideMatchSetFromUI()
+                        removeMatchSetFromGameBoard()
                     }
                     if game.cardsOnGameBoard.count == 0 {
                         winGame()
@@ -287,6 +289,21 @@ class ViewController: UIViewController {
             updateUI()
         }
     }
+    
+    func removeMatchSetFromGameBoard() {
+        
+        for button in selectedButtons {
+            var found = false
+            for cardIndex in 0..<game.cardsOnGameBoard.count where !found {
+                if game.cardsOnGameBoard[cardIndex].identifier == button.tag {
+                    game.cardsOnGameBoard.remove(at: cardIndex)
+                    found = true
+                }
+            }
+        }
+        
+    }
+    
     
     func winGame() {
         let alert = UIAlertController(title: "Game Over", message: "Congratulations, You Won!", preferredStyle: UIAlertControllerStyle.alert)

@@ -1,4 +1,4 @@
-//
+
 //  Set.swift
 //  Set
 //
@@ -18,9 +18,9 @@ public class SetGame {
     
     var score = 0
     
-    let numOfDifferentColors = 3
-    let numOfDifferentShapes = 3
-    let numOfDifferentShadings = 3
+    let numOfDifferentColors = 2
+    let numOfDifferentShapes = 2
+    let numOfDifferentShadings = 2
     let numOfShapes = 3
     
     var deck = [Card]()
@@ -33,7 +33,12 @@ public class SetGame {
         if selectedCards.count == 3 {
             selectedCards.removeAll()
         }
-        selectedCards.append(cardsOnGameBoard[index])
+//        selectedCards.append(cardsOnGameBoard[index])
+        for card in cardsOnGameBoard {
+            if card.identifier == index {
+                selectedCards.append(card)
+            }
+        }
     }
     
     func deselectCard(atIndex index: Int) {
