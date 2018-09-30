@@ -330,7 +330,7 @@ class ViewController: UIViewController {
     
     func deselectNotSetButtons() {
         for button in buttons {
-            button.setNewStyle(to: getStyle)
+            button.setNewStyle(style: getStyle)
         }
     }
     
@@ -454,14 +454,14 @@ class ViewController: UIViewController {
     }
     
     func changeShape(ofButton button: UIButton) {
-        button.setNewStyle(to: getStyle)
+        button.setNewStyle(style: getStyle)
     }
 }
 
 extension UIButton {
     
-    func setNewStyle(to res: (UIButton) -> CGColor?) {
-        switch res(self) {
+    func setNewStyle(style buttonStyle: (UIButton) -> CGColor?) {
+        switch buttonStyle(self) {
         case #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1):
             self.layer.borderWidth = 3.0
             self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
