@@ -16,7 +16,7 @@ protocol IphonePlayerMode {
     
     func startAgainstIphoneMode()
     
-//    func startThinking(forHowLong timeInterval: Int, clousre)
+    func startThinking(forHowLong timeInterval: Int, funcToRunAfterTimerEnds funcToRun: () -> [Int]?)
     
     func stopThinking()
     
