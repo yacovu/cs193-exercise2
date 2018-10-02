@@ -125,28 +125,11 @@ class ViewController: UIViewController {
         
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
-            if matchedButtons.count == 3 { // replace 3 matched cards with 3 new ones from the deck
-                let threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
-                for matchIndex in 0..<3 { // find the required button in buttons array
-                    for buttonIndex in 0..<buttons.count {
-                        if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
-                            let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
-                            let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
-                            buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
-                            changeShape(ofButton: buttons[buttonIndex])
-                        }
-                    }
-                }
-                addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
+            if matchedButtons.count == 3 {
+                replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards)
             }
-            else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 { // add 3 new cards to new places
-                for index in 0..<3 {
-                    let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1)
-                    let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])])
-                    buttons.setButton(atIndex: freeButtonIndex, tag: threeNewCards[index].identifier, attributedString: attString, for: UIControlState.normal)
-                    freeButtonIndex += 1
-                }
-                addThreeNewCardsToGameBoard(threeCards: threeNewCards)
+            else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 {
+                addThreeNewCardsToNewPlaces(newCards: threeNewCards)
             }
             else { // gameboard capacity reached to its max. Game over
                 needToEndGame = true
@@ -168,6 +151,31 @@ class ViewController: UIViewController {
         needToDealNewCards = false
         matchedButtons.removeAll()
         updateUI()
+    }
+    
+    func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card]) {
+        let threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
+        for matchIndex in 0..<3 { // find the required button in buttons array
+            for buttonIndex in 0..<buttons.count {
+                if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
+                    let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
+                    let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
+                    buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
+                    changeShape(ofButton: buttons[buttonIndex])
+                }
+            }
+        }
+        addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
+    }
+    
+    func addThreeNewCardsToNewPlaces(newCards threeNewCards: [Card]) {
+        for index in 0..<3 {
+            let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[index].shape]]![threeNewCards[index].shading].string, times: threeNewCards[index].numOfShapes + 1)
+            let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[index])])
+            buttons.setButton(atIndex: freeButtonIndex, tag: threeNewCards[index].identifier, attributedString: attString, for: UIControlState.normal)
+            freeButtonIndex += 1
+        }
+        addThreeNewCardsToGameBoard(threeCards: threeNewCards)
     }
     
     func checkIfNeedToEnd() {
@@ -232,7 +240,7 @@ class ViewController: UIViewController {
     @IBAction func touchCard(_ sender: UIButton) {
         var setFound = false
         
-      checkIfNeedToEnd()
+        checkIfNeedToEnd()
         
         if let touchedCardIndex = buttons.index(of: sender) {
             if isSelected(selectedButton: sender) {
@@ -256,7 +264,7 @@ class ViewController: UIViewController {
                 needToDealNewCards = false
             }
             if needToDeselectNotASetSelection {
-                deselectNotSetButtons()
+                clearButttons()
                 needToDeselectNotASetSelection = false
             }
             
@@ -288,6 +296,22 @@ class ViewController: UIViewController {
             }
             updateUI()
         }
+    }
+    
+    func deselectCard(atTouchedCardIndex touchedCardIndex: Int, button cardButton: UIButton) {
+        var deleted = false
+        game.deselectCard(atIndex: touchedCardIndex)
+        for buttonIndex in 0..<selectedButtons.count where !deleted {
+            if selectedButtons[buttonIndex] == cardButton {
+                selectedButtons.remove(at: buttonIndex)
+                deleted = true
+            }
+        }
+    }
+    
+    func selectCard(atTouchedCardIndex touchedCardIndex: Int, button cardButton: UIButton) {
+        game.selectCard(atIndex: buttons[touchedCardIndex].tag)
+        selectedButtons.append(cardButton)
     }
     
     func getStyle(ofButton button: UIButton) -> CGColor? {
@@ -328,11 +352,13 @@ class ViewController: UIViewController {
         return selectedButtons.contains(button)
     }
     
-    func deselectNotSetButtons() {
-        for button in buttons {
-            button.setNewStyle(style: getStyle)
-        }
-    }
+//    func deselectNotSetButtons() {
+//        clearButttons()
+////        for button in selectedButtons {
+//////            button.setNewStyle(style: getStyle)
+////            changeShape(ofButton: button)
+////        }
+//    }
     
     func endGame() {
         let alert = UIAlertController(title: "Game Over", message: "No Further Moves!", preferredStyle: UIAlertControllerStyle.alert)
