@@ -352,14 +352,6 @@ class ViewController: UIViewController {
         return selectedButtons.contains(button)
     }
     
-//    func deselectNotSetButtons() {
-//        clearButttons()
-////        for button in selectedButtons {
-//////            button.setNewStyle(style: getStyle)
-////            changeShape(ofButton: button)
-////        }
-//    }
-    
     func endGame() {
         let alert = UIAlertController(title: "Game Over", message: "No Further Moves!", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
