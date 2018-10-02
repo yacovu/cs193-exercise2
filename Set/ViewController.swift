@@ -60,9 +60,47 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidAppear(animated)    
         initGameBoard()
+        selectGameMode()
         
+    }
+    
+    func selectGameMode() {
+        
+        let alert = UIAlertController(title: "Game Mode", message: "Please Select Game Mode" , preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Single Player", style: UIAlertActionStyle.default, handler: {action in self.setGameMode(gameMode: SetGame.gameMode.singlePlayer)}))
+        alert.addAction(UIAlertAction(title: "Play Againts Computer", style: UIAlertActionStyle.default, handler: {action in self.setGameMode(gameMode: SetGame.gameMode.playAgainstComputer)}))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func setGameMode(gameMode mode: SetGame.gameMode) {
+        switch mode {
+        case SetGame.gameMode.playAgainstComputer:
+            computerStatusIndicator.text = "🤔"
+            computerScore.text = "Computer's Score: 0"
+            
+        default:
+            computerStatusIndicator.text = ""
+            computerScore.text = ""
+        }
+        
+    }
+    
+    func changeEmojiIndicatorToWin() {
+        
+    }
+    
+    func changeEmojiIndicatorToThinking() {
+        
+    }
+    
+    func changeEmojiIndicatorToHappy() {
+        
+    }
+    
+    func reset(scheduledTimer timer: Timer){
+
     }
     
     
@@ -117,6 +155,10 @@ class ViewController: UIViewController {
         
         updateUI()
     }
+    
+    @IBOutlet weak var computerScore: UILabel!
+    
+    @IBOutlet weak var computerStatusIndicator: UILabel!
     
     @IBOutlet weak var dealCard: UIButton!
     

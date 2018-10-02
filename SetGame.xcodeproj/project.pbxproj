@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D31AEB221636F1900011552 /* IphonePlayerMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D31AEB121636F1900011552 /* IphonePlayerMode.swift */; };
 		0D64A591215383EF00473198 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64A590215383EF00473198 /* AppDelegate.swift */; };
 		0D64A593215383EF00473198 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64A592215383EF00473198 /* ViewController.swift */; };
 		0D64A596215383EF00473198 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D64A594215383EF00473198 /* Main.storyboard */; };
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D31AEB121636F1900011552 /* IphonePlayerMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IphonePlayerMode.swift; sourceTree = "<group>"; };
 		0D64A58D215383EF00473198 /* SetGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SetGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D64A590215383EF00473198 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D64A592215383EF00473198 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				0D64A59C215383F000473198 /* Info.plist */,
 				0D64A5A32153847400473198 /* Card.swift */,
 				0D64A5A52153848200473198 /* SetGame.swift */,
+				0D31AEB121636F1900011552 /* IphonePlayerMode.swift */,
 			);
 			path = Set;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 				0D64A5A62153848200473198 /* SetGame.swift in Sources */,
 				0D64A593215383EF00473198 /* ViewController.swift in Sources */,
 				0D64A5A42153847400473198 /* Card.swift in Sources */,
+				0D31AEB221636F1900011552 /* IphonePlayerMode.swift in Sources */,
 				0D64A591215383EF00473198 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

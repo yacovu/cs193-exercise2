@@ -10,6 +10,37 @@ import Foundation
 
 public class SetGame {
     
+//    func selectGameMode() -> SetGame.gameMode {
+//        
+//    }
+//
+//    func startSinglePlayerMode() {
+//        <#code#>
+//    }
+//    
+//    func startAgainstIphoneMode() {
+//        <#code#>
+//    }
+//    
+//    func startThinking(forHowLong timeInterval: Int) {
+//        <#code#>
+//    }
+//    
+//    func stopThinking() {
+//        <#code#>
+//    }
+//    
+//    func makeATurn() {
+//        <#code#>
+//    }
+    
+    
+
+    
+
+   
+    
+    
     let numOfCardsOnStart = 12
     
     let maxGameBoardCapacity = 24
@@ -28,6 +59,17 @@ public class SetGame {
     var cardsOnGameBoard = [Card]()
     
     var selectedCards = [Card]()
+    
+    enum gameMode {
+        case singlePlayer
+        case playAgainstComputer
+    }
+    
+    
+    
+    
+    
+    
     
     func selectCard(atIndex index: Int) {
         if selectedCards.count == 3 {
