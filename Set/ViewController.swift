@@ -89,19 +89,13 @@ class ViewController: UIViewController {
             game.mode = SetGame.gameMode.playAgainstComputer
             computerStatusIndicator.text = "Computer is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
-//            let timeToThink = Int(arc4random_uniform(60)) + 10
-//            let timeToThink = Int(arc4random_uniform(5)) + 10
-//            print(timeToThink)
-//            let timeToThink = 2
             startThinking()
-            
             
         default:
             game.mode = SetGame.gameMode.playAgainstComputer
             computerStatusIndicator.text = ""
             computerScore.text = ""
         }
-        
     }
     
     func playMove() {
@@ -112,7 +106,6 @@ class ViewController: UIViewController {
     func startThinking() {
         var timeToThink = Int(arc4random_uniform(5)) + 10
         print(timeToThink)
-//        var timeToThink = 2
         var setCards: [Int]?
         
         self.changeEmojiIndicatorToThinking()
@@ -148,16 +141,25 @@ class ViewController: UIViewController {
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToWait -= 1
+            self.disableAllGameBoardButtons()
+            self.showComputerSet(setCards: setCards)
             if self.playerMadeMove {
                 timer.invalidate()
                 self.playMove()
                 self.playerMadeMove = false
+                self.enableAllGameBoardButtons()
             }
            else if timeToWait == 0 {
                 self.disableAllGameBoardButtons()
                 self.resetComputerSelectedButtons()
                 self.showComputerSet(setCards: setCards)
-
+                
+                //////////////////////////////////////
+                self.clearButttons()
+                self.matchedButtons.removeAll()
+                self.selectedButtons.removeAll()
+                //////////////////////////////////////
+                
                 self.addComputerButtonsToMatchedButtonsArray()
                 self.game.scoreComputer += 3
                 self.enableAllGameBoardButtons()
@@ -206,24 +208,6 @@ class ViewController: UIViewController {
                 }
             }
         }
-//            needToDealNewCards = true
-//            self.game.scoreComputer += 3
-//            if game.deck.count == 0 {
-//                hideMatchSetFromUI()
-//                removeMatchSetFromGameBoard()
-//            }
-//            if game.cardsOnGameBoard.count == 0 {
-//                winGame()
-//            }
-//
-//                selectedButtons.removeAll()
-//            }
-//            updateUI()
-    }
-
-    
-    func changeEmojiIndicatorToWin() {
-        
     }
     
     func changeEmojiIndicatorToThinking() {
@@ -316,8 +300,8 @@ class ViewController: UIViewController {
             sender.isEnabled = false
         }
         needToDealNewCards = false
-        matchedButtons.removeAll()
-        computerMatchedButtons.removeAll()
+//        matchedButtons.removeAll()
+//        computerMatchedButtons.removeAll()
         updateUI()
     }
     
@@ -327,9 +311,11 @@ class ViewController: UIViewController {
             playerMadeMove = true
             if matchedButtons.count == 3 {
                 replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards, playerType: playerType.player)
+                matchedButtons.removeAll()
             }
             else if computerMatchedButtons.count == 3 {
                 replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards, playerType: playerType.Computer)
+                computerMatchedButtons.removeAll()
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 {
                 addThreeNewCardsToNewPlaces(newCards: threeNewCards)
@@ -356,6 +342,9 @@ class ViewController: UIViewController {
         switch player {
         case playerType.Computer:
             threeOldIndexes = [computerMatchedButtons[0].tag, computerMatchedButtons[1].tag, computerMatchedButtons[2].tag]
+            if computerMatchEqualToPlayerMatch() { // prevent from player to redeal cards
+                matchedButtons.removeAll()
+            }
         default:
             threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
         }
@@ -367,7 +356,7 @@ class ViewController: UIViewController {
                         let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
                         let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
                         buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
-                        changeShape(ofButton: buttons[buttonIndex])
+//                        changeShape(ofButton: buttons[buttonIndex])
                     }
                     
                 default:
@@ -381,6 +370,10 @@ class ViewController: UIViewController {
             }
         }
         addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
+    }
+    
+    func computerMatchEqualToPlayerMatch() -> Bool {
+        return matchedButtons.contains(computerMatchedButtons[0]) && matchedButtons.contains(computerMatchedButtons[1]) && matchedButtons.contains(computerMatchedButtons[2])
     }
     
     func addThreeNewCardsToNewPlaces(newCards threeNewCards: [Card]) {
@@ -476,9 +469,6 @@ class ViewController: UIViewController {
         checkIfNeedToEnd()
         
         if let touchedCardIndex = buttons.index(of: sender) {
-            
-            
-            playerMadeMove = true
             if isSelected(selectedButton: sender) {
                 var deleted = false
                 game.deselectCard(atIndex: touchedCardIndex)
@@ -509,6 +499,7 @@ class ViewController: UIViewController {
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
                 if setFound {
+                    playerMadeMove = true
                     changeCardsShapeToSet()
                     addButtonsToMatchedButtonsArray()
                     needToDealNewCards = true
