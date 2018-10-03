@@ -90,9 +90,10 @@ class ViewController: UIViewController {
             computerStatusIndicator.text = "Computer is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
-//            let timeToThink = Int(arc4random_uniform(15)) + 10
-            let timeToThink = 2
-            playMove(forHowLong: timeToThink)
+//            let timeToThink = Int(arc4random_uniform(5)) + 10
+//            print(timeToThink)
+//            let timeToThink = 2
+            startThinking()
             
             
         default:
@@ -103,63 +104,56 @@ class ViewController: UIViewController {
         
     }
     
-    func playMove(forHowLong timeInterval: Int) {
-        startThinking(forHowLong: timeInterval)
+    func playMove() {
+        startThinking()
     }
     
     
-    func startThinking(forHowLong timeInterval: Int) {
-//            let timeToThink = Int(arc4random_uniform(60)) + 10
-//        var timeToThink = Int(arc4random_uniform(15)) + 10
-        var timeToThink = 2
+    func startThinking() {
+        var timeToThink = Int(arc4random_uniform(5)) + 10
+        print(timeToThink)
+//        var timeToThink = 2
         var setCards: [Int]?
         
         self.changeEmojiIndicatorToThinking()
-        //change timeInterval from 1 to timeInterval
+        //TODO: change timeInterval from 1 to timeInterval
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToThink -= 1
             if self.playerMadeMove {
                 timer.invalidate()
-                self.playMove(forHowLong: timeInterval)
+                self.playMove()
                 self.playerMadeMove = false
             }
             else if timeToThink == 0 {
                 timer.invalidate()
-                
-    //            if userMadeAMove {
-    //                timer.invalidate()
-    //            }
-
                 setCards = self.game.getASet()
                 if setCards != nil {
                     self.changeEmojiIndicatorToHappy()
-                    self.waitAndMakeMove(withSetCards: setCards!, thinkTime: timeInterval)
+                    self.waitAndMakeMove(withSetCards: setCards!)
                 }
                 else {
                     self.changeEmojiIndicatorToUnhappy()
                     self.dealCardsAndAddToGameBoard()
                     self.clearButttons()
-                    //        var timeToThink = Int(arc4random_uniform(60) + 10)
                     timeToThink = 2
                     self.updateUI()
-                    self.playMove(forHowLong: timeToThink)
+                    self.playMove()
                 }
             }
         }
     }
     
-    func waitAndMakeMove(withSetCards setCards: [Int], thinkTime timeInterval: Int){
-        var timeToThink = 2 // wait 2 seconds before make a move
+    func waitAndMakeMove(withSetCards setCards: [Int]){
+        var timeToWait = 2 // wait 2 seconds before make a move
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-//            print ("time to think2: \(timeToThink)")
-            timeToThink -= 1
+            timeToWait -= 1
             if self.playerMadeMove {
                 timer.invalidate()
-                self.playMove(forHowLong: timeInterval)
+                self.playMove()
                 self.playerMadeMove = false
             }
-           else if timeToThink == 0 {
+           else if timeToWait == 0 {
                 self.disableAllGameBoardButtons()
                 self.resetComputerSelectedButtons()
                 self.showComputerSet(setCards: setCards)
@@ -176,9 +170,8 @@ class ViewController: UIViewController {
                     }
                 }
                 timer.invalidate()
-                timeToThink = 2
                 self.updateUI()
-                self.playMove(forHowLong: timeToThink)
+                self.playMove()
             }
         }
     }
