@@ -575,7 +575,33 @@ class ViewController: UIViewController {
     
     
     func winGame() {
+        if game.scoreComputer > game.scorePlayer {
+            computerWonMessage()
+        }
+        else if game.scoreComputer < game.scorePlayer {
+            playerWonMessage()
+        }
+        else {
+            tieMessage()
+        }
+    }
+    
+    func computerWonMessage() {
+        let alert = UIAlertController(title: "Game Over", message: "Computer Won!", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
+        alert.addAction(UIAlertAction(title: "New Game", style: UIAlertActionStyle.default, handler: {action in self.newGame(UIButton())}))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func playerWonMessage() {
         let alert = UIAlertController(title: "Game Over", message: "Congratulations, You Won!", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
+        alert.addAction(UIAlertAction(title: "New Game", style: UIAlertActionStyle.default, handler: {action in self.newGame(UIButton())}))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func tieMessage() {
+        let alert = UIAlertController(title: "Game Over", message: "It's a Tie!", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
         alert.addAction(UIAlertAction(title: "New Game", style: UIAlertActionStyle.default, handler: {action in self.newGame(UIButton())}))
         self.present(alert, animated: true, completion: nil)
