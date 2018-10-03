@@ -21,6 +21,8 @@ public class SetGame {
     
     var scoreComputer = 0
     
+    var mode = gameMode.singlePlayer
+    
     let numOfDifferentColors = 3
     let numOfDifferentShapes = 3
     let numOfDifferentShadings = 3

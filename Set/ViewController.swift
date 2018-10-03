@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     private(set) var numberOfShapes = [1,2,3]
     lazy private(set) var shapes = ["diamond", "square", "circle"]
     
+    
     let blankDiamond = NSAttributedString(string: "\u{25CA}")
     private let blankSquare = NSAttributedString(string: "\u{25A2}")
     private let blankCircle = NSAttributedString(string: "\u{25EF}")
@@ -85,6 +86,7 @@ class ViewController: UIViewController {
     func setGameMode(gameMode mode: SetGame.gameMode) {
         switch mode {
         case SetGame.gameMode.playAgainstComputer:
+            game.mode = SetGame.gameMode.playAgainstComputer
             computerStatusIndicator.text = "Computer Is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
@@ -94,6 +96,7 @@ class ViewController: UIViewController {
             
             
         default:
+            game.mode = SetGame.gameMode.playAgainstComputer
             computerStatusIndicator.text = ""
             computerScore.text = ""
         }
@@ -288,6 +291,10 @@ class ViewController: UIViewController {
             button.isEnabled = true
             needToEndGame = false
         }
+        
+        computerMatchedButtons = [UIButton]()
+        computerSelectedButtons = [UIButton]()
+        selectGameMode()
         game = SetGame()
         initGameBoard()
         freeButtonIndex = game.numOfCardsOnStart
@@ -519,7 +526,7 @@ class ViewController: UIViewController {
                         removeMatchSetFromGameBoard()
                     }
                     if game.cardsOnGameBoard.count == 0 {
-                        winGame()
+                        endGame()
                     }
                 }
                 else {
@@ -580,7 +587,7 @@ class ViewController: UIViewController {
     }
     
     
-    func winGame() {
+    func printScoreStatistics() {
         if game.scoreComputer > game.scorePlayer {
             computerWonMessage()
         }
@@ -627,6 +634,12 @@ class ViewController: UIViewController {
     }
     
     func endGame() {
+        
+        if game.mode == SetGame.gameMode.playAgainstComputer {
+             printScoreStatistics()
+        }
+       
+        
         let alert = UIAlertController(title: "Game Over", message: "No Further Moves!", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
         alert.addAction(UIAlertAction(title: "New Game", style: UIAlertActionStyle.default, handler: {action in self.newGame(UIButton())}))
