@@ -63,6 +63,8 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)    
         initGameBoard()
         selectGameMode()
+//        sleep(10)
+//        dealCardsAndAddToGameBoard()
         
     }
     
@@ -79,6 +81,9 @@ class ViewController: UIViewController {
         case SetGame.gameMode.playAgainstComputer:
             computerStatusIndicator.text = "🤔"
             computerScore.text = "Computer's Score: 0"
+            let timeToThink = Int(arc4random_uniform(60))
+            startGameAgainstComputer(forHowLong: timeToThink)
+            
             
         default:
             computerStatusIndicator.text = ""
@@ -87,16 +92,113 @@ class ViewController: UIViewController {
         
     }
     
+    func startGameAgainstComputer(forHowLong timeInterval: Int) {
+//        while game.deck.count > 0 {
+            startThinking(forHowLong: timeInterval)
+//            print(game.deck.count)
+//        }        
+    }
+    
+    
+    func startThinking(forHowLong timeInterval: Int) {
+//        var timeToThink = Int(arc4random_uniform(60))
+        var timeToThink = 2
+        var setCards: [Int]?
+        
+        self.changeEmojiIndicatorToThinking()
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            timeToThink -= 1
+            print("timeToThink1: \(timeToThink)")
+            if timeToThink == 0 {
+                setCards = self.game.getASet()
+                if setCards != nil {
+                    self.changeEmojiIndicatorToHappy()
+                    self.waitAndMakeMove(withSetCards: setCards!)
+                }
+                else {
+                    self.changeEmojiIndicatorToUnhappy()
+                    self.dealCardsAndAddToGameBoard()
+                }
+                timer.invalidate()
+            }
+        }
+    }
+    
+    func waitAndMakeMove(withSetCards setCards: [Int]){
+        var timeToThink = 2 // wait 2 seconds before make a move
+        
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            print ("time to think2: \(timeToThink)")
+            timeToThink -= 1
+            if timeToThink == 0 {
+                self.disableAllGameBoardButtons()
+                self.resetSelectedButtons()
+                self.showComputerSet(setCards: setCards)
+                self.addButtonsToMatchedButtonsArray()
+                self.game.scoreComputer += 3
+                self.enableAllGameBoardButtons()
+                self.dealCardsAndAddToGameBoard()
+                timer.invalidate()
+            }
+        }
+    }
+    
+    func disableAllGameBoardButtons() {
+        for buttonIndex in 0..<freeButtonIndex {
+            buttons[buttonIndex].isEnabled = false
+        }
+    }
+    
+    func enableAllGameBoardButtons() {
+        for buttonIndex in 0..<freeButtonIndex {
+            buttons[buttonIndex].isEnabled = true
+        }
+    }
+    
+    func resetSelectedButtons() {
+        selectedButtons.removeAll()
+    }
+    
+    func showComputerSet(setCards threeSetCards: [Int]) {
+        for cardIndex in 0..<threeSetCards.count {
+            let cardIdentifier = threeSetCards[cardIndex]
+            for button in buttons {
+                if button.tag == cardIdentifier {
+                    selectedButtons.append(button)
+                    button.setStyleToGoodSetGuess()
+                }
+            }
+        }
+//            needToDealNewCards = true
+//            self.game.scoreComputer += 3
+//            if game.deck.count == 0 {
+//                hideMatchSetFromUI()
+//                removeMatchSetFromGameBoard()
+//            }
+//            if game.cardsOnGameBoard.count == 0 {
+//                winGame()
+//            }
+//
+//                selectedButtons.removeAll()
+//            }
+//            updateUI()
+    }
+
+    
     func changeEmojiIndicatorToWin() {
         
     }
     
     func changeEmojiIndicatorToThinking() {
-        
+        computerStatusIndicator.text = "🤔"
     }
     
     func changeEmojiIndicatorToHappy() {
-        
+        computerStatusIndicator.text = "😁"
+    }
+    
+    func changeEmojiIndicatorToUnhappy() {
+        computerStatusIndicator.text = "😤"
     }
     
     func reset(scheduledTimer timer: Timer){
@@ -123,7 +225,7 @@ class ViewController: UIViewController {
     
     func getAHint() {
         showThreeMatchedCards()
-        game.score -= 1
+        game.scorePlayer -= 1
         updateUI()
     }
     
@@ -163,8 +265,18 @@ class ViewController: UIViewController {
     @IBOutlet weak var dealCard: UIButton!
     
     @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
-       checkIfNeedToEnd()
-        
+        checkIfNeedToEnd()
+        dealCardsAndAddToGameBoard()
+
+        if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
+            sender.isEnabled = false
+        }
+        needToDealNewCards = false
+        matchedButtons.removeAll()
+        updateUI()
+    }
+    
+    func dealCardsAndAddToGameBoard() {
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
             if matchedButtons.count == 3 {
@@ -186,13 +298,6 @@ class ViewController: UIViewController {
                 firstTimeDeckEmpty = false
             }
         }
-
-        if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
-            sender.isEnabled = false
-        }
-        needToDealNewCards = false
-        matchedButtons.removeAll()
-        updateUI()
     }
     
     func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card]) {
@@ -275,7 +380,7 @@ class ViewController: UIViewController {
     }
     
     
-    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var playerScoreLabel: UILabel!
     
     @IBOutlet weak var deckLabel: UILabel!
     
@@ -319,7 +424,7 @@ class ViewController: UIViewController {
                     addButtonsToMatchedButtonsArray()
                     needToDealNewCards = true
                     disableButtons()
-                    game.score += 3
+                    game.scorePlayer += 3
                     if game.deck.count == 0 {
                         hideMatchSetFromUI()
                         removeMatchSetFromGameBoard()
@@ -332,7 +437,7 @@ class ViewController: UIViewController {
                     changeCardsShapeToNotASet()
                     needToDeselectNotASetSelection = true
                     
-                    game.score -= 5
+                    game.scorePlayer -= 5
                 }
                 selectedButtons.removeAll()
             }
@@ -447,7 +552,8 @@ class ViewController: UIViewController {
     }
     
     func updateUI() {
-        scoreLabel.text = "Score: \(game.score)"
+        playerScoreLabel.text = "Player's Score: \(game.scorePlayer)"
+        computerScore.text = "Computer's Score: \(game.scoreComputer)"
         deckLabel.text = "Cards in Deck: \(game.deck.count)"
     }
     

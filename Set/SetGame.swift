@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class SetGame: IphonePlayerMode {
+public class SetGame {
     
     
     let numOfCardsOnStart = 12
@@ -17,7 +17,9 @@ public class SetGame: IphonePlayerMode {
     
     lazy var deckCapacity =  numOfDifferentColors * numOfDifferentShapes * numOfDifferentShadings * numOfShapes
     
-    var score = 0
+    var scorePlayer = 0
+    
+    var scoreComputer = 0
     
     let numOfDifferentColors = 3
     let numOfDifferentShapes = 3
@@ -36,51 +38,51 @@ public class SetGame: IphonePlayerMode {
     }
     
     
-    func selectGameMode() -> SetGame.gameMode {
-        <#code#>
-    }
+//    func selectGameMode() -> SetGame.gameMode {
+//        <#code#>
+//    }
+//
+//    func startSinglePlayerMode() {
+//        <#code#>
+//    }
+//
+//    func startAgainstIphoneMode() {
+//        <#code#>
+//    }
     
-    func startSinglePlayerMode() {
-        <#code#>
-    }
+//    func startThinking(forHowLong timeInterval: Int, funcToRunAfterTimerEnds funcToRun: () -> [Int]?) {
+//        var timeToThink = Int(arc4random_uniform(60))
+//        
+//        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
+//            timeToThink -= 1
+//            if timeToThink == 0 {
+//                self.makeATurn()
+//            }
+//        }
+//    }
     
-    func startAgainstIphoneMode() {
-        <#code#>
-    }
-    
-    func startThinking(forHowLong timeInterval: Int, funcToRunAfterTimerEnds funcToRun: () -> [Int]?) {
-        var timeToThink = Int(arc4random_uniform(60))
-        
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
-            timeToThink -= 1
-            if timeToThink == 0 {
-                self.makeATurn()
-            }
-        }
-    }
-    
-    func stopThinking() {
-        <#code#>
-    }
-    
-    func makeATurn() {
-        setOfCards = getASet()
-        if setOfCards != nil {
-            waitAndMakeMove()
-        }
-        else {
-            
-        }
-    }
-    
-    func waitAndMakeMove() {
-        timeToWait = 2
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
-            timeToWait -= 1
-            if timeToWait == 0 {
-                self.makeATurn()
-            }
-        }
+//    func stopThinking() {
+//        <#code#>
+//    }
+//
+//    func makeATurn() {
+//        setOfCards = getASet()
+//        if setOfCards != nil {
+//            waitAndMakeMove()
+//        }
+//        else {
+//
+//        }
+//    }
+//
+//    func waitAndMakeMove() {
+//        timeToWait = 2
+//        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
+//            timeToWait -= 1
+//            if timeToWait == 0 {
+//                self.makeATurn()
+//            }
+//        }
     
     
     

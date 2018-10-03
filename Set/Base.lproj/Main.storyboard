@@ -287,7 +287,7 @@
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u2W-FQ-NoN">
                                 <rect key="frame" x="16" y="482" width="46" height="0.0"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -328,7 +328,7 @@
                         <outlet property="computerStatusIndicator" destination="u2W-FQ-NoN" id="U0l-Fd-g7z"/>
                         <outlet property="dealCard" destination="SAd-2q-Eam" id="O4m-qf-ATh"/>
                         <outlet property="deckLabel" destination="8xm-Mz-G9t" id="iqg-Ge-7ne"/>
-                        <outlet property="scoreLabel" destination="Htr-On-fv4" id="LPX-k1-JzP"/>
+                        <outlet property="playerScoreLabel" destination="Htr-On-fv4" id="dwF-qA-sg6"/>
                         <outletCollection property="buttons" destination="eKt-x7-Ayq" collectionClass="NSMutableArray" id="DlD-vq-vnE"/>
                         <outletCollection property="buttons" destination="j48-Pf-zau" collectionClass="NSMutableArray" id="bt5-Ek-Qqg"/>
                         <outletCollection property="buttons" destination="KCb-Nc-xwN" collectionClass="NSMutableArray" id="4dO-wa-XcX"/>
@@ -357,7 +357,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-727.20000000000005" y="10.344827586206897"/>
+            <point key="canvasLocation" x="-727.5" y="10"/>
         </scene>
     </scenes>
 </document>
