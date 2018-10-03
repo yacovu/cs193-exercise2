@@ -85,11 +85,11 @@ class ViewController: UIViewController {
     func setGameMode(gameMode mode: SetGame.gameMode) {
         switch mode {
         case SetGame.gameMode.playAgainstComputer:
-            computerStatusIndicator.text = "Computers Is Thinking 🤔"
+            computerStatusIndicator.text = "Computer Is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
-            let timeToThink = Int(arc4random_uniform(20)) + 10
-//            let timeToThink = 2
+//            let timeToThink = Int(arc4random_uniform(20)) + 10
+            let timeToThink = 2
             playMove(forHowLong: timeToThink)
             
             
@@ -107,8 +107,8 @@ class ViewController: UIViewController {
     
     func startThinking(forHowLong timeInterval: Int) {
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
-        var timeToThink = Int(arc4random_uniform(20))
-//        var timeToThink = 2
+//        var timeToThink = Int(arc4random_uniform(20))
+        var timeToThink = 2
         var setCards: [Int]?
         
         self.changeEmojiIndicatorToThinking()
@@ -168,6 +168,9 @@ class ViewController: UIViewController {
                 if self.game.deck.count == 0 {
                     self.hideComputerMatchSetFromUI()
                     self.removeComputerMatchSetFromGameBoard()
+                    if self.game.getASet() == nil {
+                        self.endGame()
+                    }
                 }
                 timer.invalidate()
                 timeToThink = 2
@@ -232,7 +235,7 @@ class ViewController: UIViewController {
     }
     
     func changeEmojiIndicatorToHappy() {
-        computerStatusIndicator.text = "Hurry up! It is Selecting a Match 😁"
+        computerStatusIndicator.text = "Hurry up! It is Selecting a Set 😁"
     }
     
     func changeEmojiIndicatorToUnhappy() {
@@ -336,14 +339,15 @@ class ViewController: UIViewController {
             }
         }
         else { // insufficient cards in the deck. The button is disabled
-            if firstTimeDeckEmpty {
-                let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
-                self.present(alert, animated: true, completion: nil)
+//            if firstTimeDeckEmpty {
+//                let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
+//                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
+//                self.present(alert, animated: true, completion: nil)
                 dealCard.isEnabled = false // disable the button as required
-                firstTimeDeckEmpty = false
-            }
+//                firstTimeDeckEmpty = false
+//            }
         }
+       
     }
     
     func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card], playerType player: playerType) {
@@ -472,6 +476,8 @@ class ViewController: UIViewController {
         checkIfNeedToEnd()
         
         if let touchedCardIndex = buttons.index(of: sender) {
+            
+            
             playerMadeMove = true
             if isSelected(selectedButton: sender) {
                 var deleted = false
@@ -489,7 +495,7 @@ class ViewController: UIViewController {
             }
             
             if needToDealNewCards { // a set was found and now a new card was selected
-                dealCardsAndAddToGameBoard(sender) // get three new cards from the deck and adds them to the game board
+                dealCardsAndAddToGameBoard(sender) // gets three new cards from the deck and adds them to the game board
                 clearButttons()
                 needToDealNewCards = false
             }
