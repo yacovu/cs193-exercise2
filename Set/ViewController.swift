@@ -10,7 +10,9 @@ import UIKit
 class ViewController: UIViewController {
     
     private var game = SetGame()
+    private var computerSelectedButtons = [UIButton]()
     private var selectedButtons = [UIButton]()
+    private var computerMatchedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
     private var needToDealNewCards = false
     private var needToDeselectNotASetSelection = false
@@ -48,6 +50,11 @@ class ViewController: UIViewController {
         case green
         case blue
     }
+    
+    enum playerType: Int {
+        case player
+        case Computer
+    }
  
     
     override func viewDidLoad() {
@@ -64,8 +71,6 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)    
         initGameBoard()
         selectGameMode()
-//        sleep(10)
-//        dealCardsAndAddToGameBoard()
         
     }
     
@@ -80,10 +85,11 @@ class ViewController: UIViewController {
     func setGameMode(gameMode mode: SetGame.gameMode) {
         switch mode {
         case SetGame.gameMode.playAgainstComputer:
-            computerStatusIndicator.text = "🤔"
+            computerStatusIndicator.text = "Computers Is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
-            let timeToThink = 2
+            let timeToThink = Int(arc4random_uniform(20)) + 10
+//            let timeToThink = 2
             playMove(forHowLong: timeToThink)
             
             
@@ -100,8 +106,9 @@ class ViewController: UIViewController {
     
     
     func startThinking(forHowLong timeInterval: Int) {
-//        var timeToThink = Int(arc4random_uniform(60))
-        var timeToThink = 2
+//            let timeToThink = Int(arc4random_uniform(60)) + 10
+        var timeToThink = Int(arc4random_uniform(20))
+//        var timeToThink = 2
         var setCards: [Int]?
         
         self.changeEmojiIndicatorToThinking()
@@ -151,16 +158,16 @@ class ViewController: UIViewController {
             }
            else if timeToThink == 0 {
                 self.disableAllGameBoardButtons()
-                self.resetSelectedButtons()
+                self.resetComputerSelectedButtons()
                 self.showComputerSet(setCards: setCards)
 
-                self.addButtonsToMatchedButtonsArray()
+                self.addComputerButtonsToMatchedButtonsArray()
                 self.game.scoreComputer += 3
                 self.enableAllGameBoardButtons()
                 self.dealCardsAndAddToGameBoard()
                 if self.game.deck.count == 0 {
-                    self.hideMatchSetFromUI()
-                    self.removeMatchSetFromGameBoard()
+                    self.hideComputerMatchSetFromUI()
+                    self.removeComputerMatchSetFromGameBoard()
                 }
                 timer.invalidate()
                 timeToThink = 2
@@ -186,12 +193,16 @@ class ViewController: UIViewController {
         selectedButtons.removeAll()
     }
     
+    func resetComputerSelectedButtons() {
+        computerSelectedButtons.removeAll()
+    }
+    
     func showComputerSet(setCards threeSetCards: [Int]) {
         for cardIndex in 0..<threeSetCards.count {
             let cardIdentifier = threeSetCards[cardIndex]
             for button in buttons {
                 if button.tag == cardIdentifier {
-                    selectedButtons.append(button)
+                    computerSelectedButtons.append(button)
                     button.setStyleToGoodSetGuess()
                 }
             }
@@ -217,15 +228,15 @@ class ViewController: UIViewController {
     }
     
     func changeEmojiIndicatorToThinking() {
-        computerStatusIndicator.text = "🤔"
+        computerStatusIndicator.text = "Computers is Thinking 🤔"
     }
     
     func changeEmojiIndicatorToHappy() {
-        computerStatusIndicator.text = "😁"
+        computerStatusIndicator.text = "Hurry up! It is Selecting a Match 😁"
     }
     
     func changeEmojiIndicatorToUnhappy() {
-        computerStatusIndicator.text = "😤"
+        computerStatusIndicator.text = "Computer Delt 3 New Cards 😤"
     }
     
     func reset(scheduledTimer timer: Timer){
@@ -277,7 +288,9 @@ class ViewController: UIViewController {
         game = SetGame()
         initGameBoard()
         freeButtonIndex = game.numOfCardsOnStart
+        computerSelectedButtons = [UIButton]()
         selectedButtons = [UIButton]()
+        computerMatchedButtons = [UIButton]()
         matchedButtons = [UIButton]()
         needToDealNewCards = false
         dealCard.isEnabled = true //enable deal 3 cards button
@@ -301,6 +314,7 @@ class ViewController: UIViewController {
         }
         needToDealNewCards = false
         matchedButtons.removeAll()
+        computerMatchedButtons.removeAll()
         updateUI()
     }
     
@@ -309,7 +323,10 @@ class ViewController: UIViewController {
         if threeNewCards.count == 3 {
             playerMadeMove = true
             if matchedButtons.count == 3 {
-                replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards)
+                replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards, playerType: playerType.player)
+            }
+            else if computerMatchedButtons.count == 3 {
+                replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards, playerType: playerType.Computer)
             }
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 {
                 addThreeNewCardsToNewPlaces(newCards: threeNewCards)
@@ -326,21 +343,36 @@ class ViewController: UIViewController {
                 dealCard.isEnabled = false // disable the button as required
                 firstTimeDeckEmpty = false
             }
-            else {
-                endGame()
-            }
         }
     }
     
-    func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card]) {
-        let threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
+    func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card], playerType player: playerType) {
+        var threeOldIndexes: [Int]
+        
+        switch player {
+        case playerType.Computer:
+            threeOldIndexes = [computerMatchedButtons[0].tag, computerMatchedButtons[1].tag, computerMatchedButtons[2].tag]
+        default:
+            threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
+        }
         for matchIndex in 0..<3 { // find the required button in buttons array
             for buttonIndex in 0..<buttons.count {
-                if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
-                    let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
-                    let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
-                    buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
-                    changeShape(ofButton: buttons[buttonIndex])
+                switch player {
+                case playerType.Computer:
+                    if buttons[buttonIndex].tag == computerMatchedButtons[matchIndex].tag { // we are on the right button
+                        let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
+                        let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
+                        buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
+                        changeShape(ofButton: buttons[buttonIndex])
+                    }
+                    
+                default:
+                    if buttons[buttonIndex].tag == matchedButtons[matchIndex].tag { // we are on the right button
+                        let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
+                        let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
+                        buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
+                        changeShape(ofButton: buttons[buttonIndex])
+                    }
                 }
             }
         }
@@ -403,6 +435,24 @@ class ViewController: UIViewController {
         }
         
         for selectedButton in selectedButtons {
+            for buttonIndex in 0..<buttons.count {
+                if  buttons[buttonIndex] == selectedButton {
+                    buttons[buttonIndex].isEnabled = false
+                }
+            }
+        }
+    }
+    
+    func hideComputerMatchSetFromUI() {
+        for button in computerSelectedButtons {
+            button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.0302321743)
+            button.layer.borderWidth = 0
+            button.layer.cornerRadius = 0
+            button.setAttributedTitle(NSAttributedString(string: ""), for: UIControlState.normal)
+            button.isEnabled = false
+        }
+        
+        for selectedButton in computerSelectedButtons {
             for buttonIndex in 0..<buttons.count {
                 if  buttons[buttonIndex] == selectedButton {
                     buttons[buttonIndex].isEnabled = false
@@ -509,7 +559,18 @@ class ViewController: UIViewController {
                 }
             }
         }
-        
+    }
+    
+    func removeComputerMatchSetFromGameBoard() {
+        for button in computerSelectedButtons {
+            var found = false
+            for cardIndex in 0..<game.cardsOnGameBoard.count where !found {
+                if game.cardsOnGameBoard[cardIndex].identifier == button.tag {
+                    game.cardsOnGameBoard.remove(at: cardIndex)
+                    found = true
+                }
+            }
+        }
     }
     
     
@@ -585,6 +646,13 @@ class ViewController: UIViewController {
         }
     }
     
+    func addComputerButtonsToMatchedButtonsArray() {
+        computerMatchedButtons.removeAll()
+        for buttonIndex in 0..<computerSelectedButtons.count {
+            computerMatchedButtons.append(computerSelectedButtons[buttonIndex])
+        }
+    }
+    
     func updateUI() {
         playerScoreLabel.text = "Player's Score: \(game.scorePlayer)"
         computerScore.text = "Computer's Score: \(game.scoreComputer)"
@@ -593,6 +661,12 @@ class ViewController: UIViewController {
     
     func changeCardsShapeToSet() {
         for button in selectedButtons {
+            button.setStyleToGoodSetGuess()
+        }
+    }
+    
+    func changeComputerCardsShapeToSet() {
+        for button in computerSelectedButtons {
             button.setStyleToGoodSetGuess()
         }
     }
