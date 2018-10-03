@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     
     private var setFound = false
     private var firstTimeDeckEmpty = true
+    private var playerMadeMove = false
     
     private var needToEndGame = false
     
@@ -94,10 +95,7 @@ class ViewController: UIViewController {
     }
     
     func playMove(forHowLong timeInterval: Int) {
-//        while game.deck.count > 0 {
-            startThinking(forHowLong: timeInterval)
-//            print(game.deck.count)
-//        }        
+        startThinking(forHowLong: timeInterval)
     }
     
     
@@ -110,20 +108,22 @@ class ViewController: UIViewController {
         //change timeInterval from 1 to timeInterval
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToThink -= 1
-            if timeToThink == 0 {
+            if self.playerMadeMove {
+                timer.invalidate()
+                self.playMove(forHowLong: timeInterval)
+                self.playerMadeMove = false
+            }
+            else if timeToThink == 0 {
                 timer.invalidate()
                 
     //            if userMadeAMove {
     //                timer.invalidate()
     //            }
-                print(self.game.deck.count)
+
                 setCards = self.game.getASet()
-                if self.game.deck.count == 0 {
-                    
-                }
                 if setCards != nil {
                     self.changeEmojiIndicatorToHappy()
-                    self.waitAndMakeMove(withSetCards: setCards!)
+                    self.waitAndMakeMove(withSetCards: setCards!, thinkTime: timeInterval)
                 }
                 else {
                     self.changeEmojiIndicatorToUnhappy()
@@ -138,13 +138,18 @@ class ViewController: UIViewController {
         }
     }
     
-    func waitAndMakeMove(withSetCards setCards: [Int]){
+    func waitAndMakeMove(withSetCards setCards: [Int], thinkTime timeInterval: Int){
         var timeToThink = 2 // wait 2 seconds before make a move
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            print ("time to think2: \(timeToThink)")
+//            print ("time to think2: \(timeToThink)")
             timeToThink -= 1
-            if timeToThink == 0 {
+            if self.playerMadeMove {
+                timer.invalidate()
+                self.playMove(forHowLong: timeInterval)
+                self.playerMadeMove = false
+            }
+           else if timeToThink == 0 {
                 self.disableAllGameBoardButtons()
                 self.resetSelectedButtons()
                 self.showComputerSet(setCards: setCards)
@@ -289,6 +294,7 @@ class ViewController: UIViewController {
     @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
         checkIfNeedToEnd()
         dealCardsAndAddToGameBoard()
+        playerMadeMove = false
 
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
             sender.isEnabled = false
@@ -301,6 +307,7 @@ class ViewController: UIViewController {
     func dealCardsAndAddToGameBoard() {
         let threeNewCards = game.dealThreeNewCards() // get three new cards from the deck
         if threeNewCards.count == 3 {
+            playerMadeMove = true
             if matchedButtons.count == 3 {
                 replaceThreeMatchedCardsWithNewOnes(newCards: threeNewCards)
             }
@@ -415,6 +422,7 @@ class ViewController: UIViewController {
         checkIfNeedToEnd()
         
         if let touchedCardIndex = buttons.index(of: sender) {
+            playerMadeMove = true
             if isSelected(selectedButton: sender) {
                 var deleted = false
                 game.deselectCard(atIndex: touchedCardIndex)
@@ -465,6 +473,7 @@ class ViewController: UIViewController {
                     game.scorePlayer -= 5
                 }
                 selectedButtons.removeAll()
+                playerMadeMove = false
             }
             updateUI()
         }

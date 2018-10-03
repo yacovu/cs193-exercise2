@@ -279,8 +279,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Computer's Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BLu-rx-8g8">
-                                <rect key="frame" x="30" y="727" width="157" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Computer's Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BLu-rx-8g8">
+                                <rect key="frame" x="30" y="727" width="186" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -296,13 +296,15 @@
                         <constraints>
                             <constraint firstItem="Kwo-HX-JG3" firstAttribute="top" relation="lessThanOrEqual" secondItem="zr3-vK-KkG" secondAttribute="bottom" constant="5" id="0nZ-Ae-tcP"/>
                             <constraint firstItem="Kwo-HX-JG3" firstAttribute="top" secondItem="W2t-d4-rJr" secondAttribute="bottom" constant="1" id="3Z3-9h-FTM"/>
-                            <constraint firstItem="Htr-On-fv4" firstAttribute="top" secondItem="BLu-rx-8g8" secondAttribute="bottom" constant="8.6666666666666288" id="445-Df-OSQ"/>
                             <constraint firstItem="SAd-2q-Eam" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="47T-2F-Rwr"/>
                             <constraint firstItem="zr3-vK-KkG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="5Rj-3A-fCQ"/>
+                            <constraint firstItem="BLu-rx-8g8" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="683" id="5S7-qo-Jdc"/>
                             <constraint firstItem="W2t-d4-rJr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="SAd-2q-Eam" secondAttribute="trailing" constant="30" id="8xs-VO-7i0"/>
                             <constraint firstItem="zr3-vK-KkG" firstAttribute="leading" secondItem="W2t-d4-rJr" secondAttribute="trailing" constant="30" id="Bqm-yi-9ly"/>
+                            <constraint firstItem="BLu-rx-8g8" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="CeA-gW-X4T"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="8xm-Mz-G9t" secondAttribute="bottom" constant="1" id="DYl-ca-TuT"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Kwo-HX-JG3" secondAttribute="trailing" constant="16" id="ILd-hS-0h2"/>
+                            <constraint firstItem="Htr-On-fv4" firstAttribute="top" secondItem="BLu-rx-8g8" secondAttribute="bottom" constant="8.3333333333332575" id="K8e-fe-NuP"/>
                             <constraint firstItem="u2W-FQ-NoN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Klb-5i-T1b"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zr3-vK-KkG" secondAttribute="trailing" constant="20" id="Lyr-nb-aHd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="u2W-FQ-NoN" secondAttribute="trailing" constant="313" id="R5A-aF-yTY"/>
@@ -311,14 +313,11 @@
                             <constraint firstItem="8xm-Mz-G9t" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Htr-On-fv4" secondAttribute="trailing" constant="10" id="VfU-r0-XzY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="8xm-Mz-G9t" secondAttribute="trailing" constant="30" id="W83-hK-qau"/>
                             <constraint firstItem="8xm-Mz-G9t" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Kwo-HX-JG3" secondAttribute="bottom" constant="5" id="YuQ-um-mBC"/>
-                            <constraint firstItem="BLu-rx-8g8" firstAttribute="top" relation="greaterThanOrEqual" secondItem="u2W-FQ-NoN" secondAttribute="bottom" constant="245" id="ZIo-T6-PPL"/>
                             <constraint firstItem="SAd-2q-Eam" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="aJP-kQ-svD"/>
                             <constraint firstItem="u2W-FQ-NoN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Kwo-HX-JG3" secondAttribute="bottom" constant="41" id="gG7-eN-rzk"/>
                             <constraint firstItem="Kwo-HX-JG3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="gi0-pR-Q4J"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BLu-rx-8g8" secondAttribute="trailing" constant="188" id="rcH-S4-u6j"/>
-                            <constraint firstItem="BLu-rx-8g8" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="tfC-bV-7mx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BLu-rx-8g8" secondAttribute="trailing" constant="178" id="jcM-re-aRG"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Htr-On-fv4" secondAttribute="bottom" constant="1.6666666666666288" id="tpW-e2-EEb"/>
-                            <constraint firstItem="BLu-rx-8g8" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="683" id="v66-5n-tEs"/>
                             <constraint firstItem="Htr-On-fv4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="wv4-eq-dIN"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
