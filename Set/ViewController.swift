@@ -87,10 +87,10 @@ class ViewController: UIViewController {
         switch mode {
         case SetGame.gameMode.playAgainstComputer:
             game.mode = SetGame.gameMode.playAgainstComputer
-            computerStatusIndicator.text = "Computer Is Thinking 🤔"
+            computerStatusIndicator.text = "Computer is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
-//            let timeToThink = Int(arc4random_uniform(20)) + 10
+//            let timeToThink = Int(arc4random_uniform(15)) + 10
             let timeToThink = 2
             playMove(forHowLong: timeToThink)
             
@@ -110,7 +110,7 @@ class ViewController: UIViewController {
     
     func startThinking(forHowLong timeInterval: Int) {
 //            let timeToThink = Int(arc4random_uniform(60)) + 10
-//        var timeToThink = Int(arc4random_uniform(20))
+//        var timeToThink = Int(arc4random_uniform(15)) + 10
         var timeToThink = 2
         var setCards: [Int]?
         
@@ -294,8 +294,8 @@ class ViewController: UIViewController {
         
         computerMatchedButtons = [UIButton]()
         computerSelectedButtons = [UIButton]()
-        selectGameMode()
         game = SetGame()
+        selectGameMode()
         initGameBoard()
         freeButtonIndex = game.numOfCardsOnStart
         computerSelectedButtons = [UIButton]()
@@ -700,7 +700,9 @@ class ViewController: UIViewController {
     
     func updateUI() {
         playerScoreLabel.text = "Player's Score: \(game.scorePlayer)"
-        computerScore.text = "Computer's Score: \(game.scoreComputer)"
+        if game.mode == SetGame.gameMode.playAgainstComputer {
+            computerScore.text = "Computer's Score: \(game.scoreComputer)"
+        }
         deckLabel.text = "Cards in Deck: \(game.deck.count)"
     }
     

@@ -280,7 +280,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Computer's Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BLu-rx-8g8">
-                                <rect key="frame" x="30" y="727" width="167" height="20"/>
+                                <rect key="frame" x="30" y="727" width="157" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -317,7 +317,7 @@
                             <constraint firstItem="SAd-2q-Eam" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="aJP-kQ-svD"/>
                             <constraint firstItem="u2W-FQ-NoN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Kwo-HX-JG3" secondAttribute="bottom" constant="41" id="gG7-eN-rzk"/>
                             <constraint firstItem="Kwo-HX-JG3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="gi0-pR-Q4J"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BLu-rx-8g8" secondAttribute="trailing" constant="178" id="jcM-re-aRG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BLu-rx-8g8" secondAttribute="trailing" constant="20" id="jcM-re-aRG"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Htr-On-fv4" secondAttribute="bottom" constant="1.6666666666666288" id="tpW-e2-EEb"/>
                             <constraint firstItem="Htr-On-fv4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="wv4-eq-dIN"/>
                         </constraints>
