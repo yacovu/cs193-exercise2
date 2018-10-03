@@ -315,7 +315,7 @@
                             <constraint firstItem="SAd-2q-Eam" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="11" id="aJP-kQ-svD"/>
                             <constraint firstItem="u2W-FQ-NoN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Kwo-HX-JG3" secondAttribute="bottom" constant="41" id="gG7-eN-rzk"/>
                             <constraint firstItem="Kwo-HX-JG3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="gi0-pR-Q4J"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BLu-rx-8g8" secondAttribute="trailing" constant="188" id="rcH-S4-u6j"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BLu-rx-8g8" secondAttribute="trailing" constant="188" id="rcH-S4-u6j"/>
                             <constraint firstItem="BLu-rx-8g8" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="tfC-bV-7mx"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Htr-On-fv4" secondAttribute="bottom" constant="1.6666666666666288" id="tpW-e2-EEb"/>
                             <constraint firstItem="BLu-rx-8g8" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="683" id="v66-5n-tEs"/>
@@ -357,7 +357,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-727.5" y="10"/>
+            <point key="canvasLocation" x="-728.79999999999995" y="9.6059113300492616"/>
         </scene>
     </scenes>
 </document>

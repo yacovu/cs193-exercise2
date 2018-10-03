@@ -81,8 +81,9 @@ class ViewController: UIViewController {
         case SetGame.gameMode.playAgainstComputer:
             computerStatusIndicator.text = "🤔"
             computerScore.text = "Computer's Score: 0"
-            let timeToThink = Int(arc4random_uniform(60))
-            startGameAgainstComputer(forHowLong: timeToThink)
+//            let timeToThink = Int(arc4random_uniform(60)) + 10
+            let timeToThink = 2
+            playMove(forHowLong: timeToThink)
             
             
         default:
@@ -92,7 +93,7 @@ class ViewController: UIViewController {
         
     }
     
-    func startGameAgainstComputer(forHowLong timeInterval: Int) {
+    func playMove(forHowLong timeInterval: Int) {
 //        while game.deck.count > 0 {
             startThinking(forHowLong: timeInterval)
 //            print(game.deck.count)
@@ -106,11 +107,20 @@ class ViewController: UIViewController {
         var setCards: [Int]?
         
         self.changeEmojiIndicatorToThinking()
+        //change timeInterval from 1 to timeInterval
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToThink -= 1
-            print("timeToThink1: \(timeToThink)")
             if timeToThink == 0 {
+                timer.invalidate()
+                
+    //            if userMadeAMove {
+    //                timer.invalidate()
+    //            }
+                print(self.game.deck.count)
                 setCards = self.game.getASet()
+                if self.game.deck.count == 0 {
+                    
+                }
                 if setCards != nil {
                     self.changeEmojiIndicatorToHappy()
                     self.waitAndMakeMove(withSetCards: setCards!)
@@ -118,8 +128,12 @@ class ViewController: UIViewController {
                 else {
                     self.changeEmojiIndicatorToUnhappy()
                     self.dealCardsAndAddToGameBoard()
+                    self.clearButttons()
+                    //        var timeToThink = Int(arc4random_uniform(60) + 10)
+                    timeToThink = 2
+                    self.updateUI()
+                    self.playMove(forHowLong: timeToThink)
                 }
-                timer.invalidate()
             }
         }
     }
@@ -134,11 +148,19 @@ class ViewController: UIViewController {
                 self.disableAllGameBoardButtons()
                 self.resetSelectedButtons()
                 self.showComputerSet(setCards: setCards)
+
                 self.addButtonsToMatchedButtonsArray()
                 self.game.scoreComputer += 3
                 self.enableAllGameBoardButtons()
                 self.dealCardsAndAddToGameBoard()
+                if self.game.deck.count == 0 {
+                    self.hideMatchSetFromUI()
+                    self.removeMatchSetFromGameBoard()
+                }
                 timer.invalidate()
+                timeToThink = 2
+                self.updateUI()
+                self.playMove(forHowLong: timeToThink)
             }
         }
     }
@@ -296,6 +318,9 @@ class ViewController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
                 dealCard.isEnabled = false // disable the button as required
                 firstTimeDeckEmpty = false
+            }
+            else {
+                endGame()
             }
         }
     }
