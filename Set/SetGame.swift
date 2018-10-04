@@ -21,6 +21,10 @@ public class SetGame {
     
     var scoreComputer = 0
     
+    let legalSetScore = 3
+    let illegaSetPenalty = 5
+    let hintPenalty = 1
+    
     var mode = gameMode.singlePlayer
     
     let numOfDifferentColors = 3
@@ -39,57 +43,22 @@ public class SetGame {
         case playAgainstComputer
     }
     
+    func updateScoreDueToLegalSet(playerType player: ViewController.playerType) {
+        switch player {
+        case ViewController.playerType.Computer:
+            scoreComputer += legalSetScore
+        default:
+            scorePlayer += legalSetScore
+        }
+    }
     
-//    func selectGameMode() -> SetGame.gameMode {
-//        <#code#>
-//    }
-//
-//    func startSinglePlayerMode() {
-//        <#code#>
-//    }
-//
-//    func startAgainstIphoneMode() {
-//        <#code#>
-//    }
+    func updateScoreDueToIllegalSet() {
+        scorePlayer -= illegaSetPenalty
+    }
     
-//    func startThinking(forHowLong timeInterval: Int, funcToRunAfterTimerEnds funcToRun: () -> [Int]?) {
-//        var timeToThink = Int(arc4random_uniform(60))
-//        
-//        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
-//            timeToThink -= 1
-//            if timeToThink == 0 {
-//                self.makeATurn()
-//            }
-//        }
-//    }
-    
-//    func stopThinking() {
-//        <#code#>
-//    }
-//
-//    func makeATurn() {
-//        setOfCards = getASet()
-//        if setOfCards != nil {
-//            waitAndMakeMove()
-//        }
-//        else {
-//
-//        }
-//    }
-//
-//    func waitAndMakeMove() {
-//        timeToWait = 2
-//        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
-//            timeToWait -= 1
-//            if timeToWait == 0 {
-//                self.makeATurn()
-//            }
-//        }
-    
-    
-    
-    
-    
+    func updateScoreDueToHint() {
+        scorePlayer -= hintPenalty
+    }
     
     func selectCard(atIndex index: Int) {
         if selectedCards.count == 3 {

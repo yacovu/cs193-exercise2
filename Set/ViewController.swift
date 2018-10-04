@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     private var playerMadeMove = false
     private var computerNeedsToDealCards = false
     
-    private var needToEndGame = false
+//    private var needToEndGame = false
     private var diffLevel = difficultyLevel.amateur
     
     private(set) var colors = ["red", "green", "blue"]
@@ -62,7 +62,7 @@ class ViewController: UIViewController {
     enum difficultyLevel: Int {
         case amateur
         case professional
-        case extreme
+        case expert
     }
     
     
@@ -111,7 +111,7 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Difficulty Level", message: "Please Choose Difficulty Level" , preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Amateur", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.amateur)}))
         alert.addAction(UIAlertAction(title: "Professional", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.professional)}))
-        alert.addAction(UIAlertAction(title: "Extreme", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.extreme)}))
+        alert.addAction(UIAlertAction(title: "Expert", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.expert)}))
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -132,7 +132,7 @@ class ViewController: UIViewController {
         switch diffLevel {
         case difficultyLevel.professional:
             timeToThink = Int(arc4random_uniform(31)) + 20 // 20-50 seconds
-        case difficultyLevel.extreme:
+        case difficultyLevel.expert:
             timeToThink = Int(arc4random_uniform(21)) + 10 // 10-30 seconds
         default:
             timeToThink = Int(arc4random_uniform(41)) + 20 // 20-60 seconds
@@ -194,15 +194,13 @@ class ViewController: UIViewController {
                 self.disableAllGameBoardButtons()
                 self.resetComputerSelectedButtons()
                 self.showComputerSet(setCards: setCards)
-                
-                //////////////////////////////////////
                 self.clearButttons()
                 self.matchedButtons.removeAll()
                 self.selectedButtons.removeAll()
-                //////////////////////////////////////
                 
                 self.addComputerButtonsToMatchedButtonsArray()
-                self.game.scoreComputer += 3
+//                self.game.scoreComputer += 3
+                self.game.updateScoreDueToLegalSet(playerType: playerType.Computer)
                 self.enableAllGameBoardButtons()
                 self.dealCardsAndAddToGameBoard()
                 if self.game.deck.count == 0 {
@@ -280,7 +278,8 @@ class ViewController: UIViewController {
     
     func getAHint() {
         showThreeMatchedCards()
-        game.scorePlayer -= 1
+//        game.scorePlayer -= 1
+        game.updateScoreDueToHint()
         updateUI()
     }
     
@@ -300,7 +299,7 @@ class ViewController: UIViewController {
             button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.tag = -1
             button.isEnabled = true
-            needToEndGame = false
+//            needToEndGame = false
         }
         
         computerMatchedButtons = [UIButton]()
@@ -333,7 +332,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var dealCard: UIButton!
     
     @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
-        checkIfNeedToEnd()
+//        checkIfNeedToEnd()
         dealCardsAndAddToGameBoard()
         playerMadeMove = false
         
@@ -341,6 +340,7 @@ class ViewController: UIViewController {
             sender.isEnabled = false
         }
         userNeedToDealNewCards = false
+        computerNeedsToDealCards = false
         clearButttons()
         //        matchedButtons.removeAll()
         //        computerMatchedButtons.removeAll()
@@ -362,8 +362,9 @@ class ViewController: UIViewController {
             else if game.cardsOnGameBoard.count <= game.maxGameBoardCapacity - 3 {
                 addThreeNewCardsToNewPlaces(newCards: threeNewCards)
             }
-            else { // gameboard capacity reached to its max. Game over
-                needToEndGame = true
+            else { // gameboard capacity reached to its max
+//                needToEndGame = true
+                 dealCard.isEnabled = false
             }
         }
         else {
@@ -415,7 +416,7 @@ class ViewController: UIViewController {
     }
     
     func checkIfNeedToEnd() {
-        if needToEndGame {
+        if game.deck.count == 0 && game.getASet() == nil {
             endGame()
         }
     }
@@ -505,7 +506,9 @@ class ViewController: UIViewController {
     func handleThreeSelectedCardsOnBoard() {
         let setFound = game.checkForSet()
         if setFound {
-            dealCard.isEnabled = true
+            if game.deck.count > 0 {
+                dealCard.isEnabled = true
+            }
             playerMadeMove = true
             changeCardsShapeToSet()
             addButtonsToMatchedButtonsArray()
@@ -517,7 +520,7 @@ class ViewController: UIViewController {
                 hideMatchSetFromUI()
                 removeMatchSetFromGameBoard()
             }
-            if game.cardsOnGameBoard.count == 0 {
+            if game.cardsOnGameBoard.count == 0 || (game.deck.count == 0 && game.getASet() == nil) {
                 endGame()
             }
         }
@@ -525,7 +528,8 @@ class ViewController: UIViewController {
             changeCardsShapeToNotASet()
             needToDeselectNotASetSelection = true
             
-            game.scorePlayer -= 5
+//            game.scorePlayer -= 5
+            game.updateScoreDueToIllegalSet()
         }
         selectedButtons.removeAll()
         playerMadeMove = false
@@ -536,8 +540,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var deckLabel: UILabel!
     
     @IBAction func touchCard(_ sender: UIButton) {
-        checkIfNeedToEnd()
-        
         if let touchedCardIndex = buttons.index(of: sender) {
             if isSelected(selectedButton: sender) {
                 handleSelectedButton(onButton: sender, buttonIndex: touchedCardIndex)
