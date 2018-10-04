@@ -21,8 +21,6 @@ class ViewController: UIViewController {
     private var firstTimeDeckEmpty = true
     private var playerMadeMove = false
     private var computerNeedsToDealCards = false
-    
-//    private var needToEndGame = false
     private var diffLevel = difficultyLevel.amateur
     
     private(set) var colors = ["red", "green", "blue"]
@@ -98,7 +96,6 @@ class ViewController: UIViewController {
             computerStatusIndicator.text = "Computer is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
             chooseDifficultyLevel()
-//            startThinking()
             
         default:
             game.mode = SetGame.gameMode.singlePlayer
@@ -199,7 +196,6 @@ class ViewController: UIViewController {
                 self.selectedButtons.removeAll()
                 
                 self.addComputerButtonsToMatchedButtonsArray()
-//                self.game.scoreComputer += 3
                 self.game.updateScoreDueToLegalSet(playerType: playerType.Computer)
                 self.enableAllGameBoardButtons()
                 self.dealCardsAndAddToGameBoard()
@@ -278,7 +274,6 @@ class ViewController: UIViewController {
     
     func getAHint() {
         showThreeMatchedCards()
-//        game.scorePlayer -= 1
         game.updateScoreDueToHint()
         updateUI()
     }
@@ -299,7 +294,6 @@ class ViewController: UIViewController {
             button.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             button.tag = -1
             button.isEnabled = true
-//            needToEndGame = false
         }
         
         computerMatchedButtons = [UIButton]()
@@ -332,7 +326,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var dealCard: UIButton!
     
     @IBAction func dealCardsAndAddToGameBoard(_ sender: UIButton) {
-//        checkIfNeedToEnd()
         dealCardsAndAddToGameBoard()
         playerMadeMove = false
         
@@ -342,8 +335,6 @@ class ViewController: UIViewController {
         userNeedToDealNewCards = false
         computerNeedsToDealCards = false
         clearButttons()
-        //        matchedButtons.removeAll()
-        //        computerMatchedButtons.removeAll()
         updateUI()
     }
     
@@ -363,7 +354,6 @@ class ViewController: UIViewController {
                 addThreeNewCardsToNewPlaces(newCards: threeNewCards)
             }
             else { // gameboard capacity reached to its max
-//                needToEndGame = true
                  dealCard.isEnabled = false
             }
         }
@@ -389,7 +379,6 @@ class ViewController: UIViewController {
                         let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
                         let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
                         buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
-                        //                        changeShape(ofButton: buttons[buttonIndex])
                     }
                     
                 default:
@@ -527,8 +516,6 @@ class ViewController: UIViewController {
         else {
             changeCardsShapeToNotASet()
             needToDeselectNotASetSelection = true
-            
-//            game.scorePlayer -= 5
             game.updateScoreDueToIllegalSet()
         }
         selectedButtons.removeAll()
