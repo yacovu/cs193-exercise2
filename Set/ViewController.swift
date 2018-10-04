@@ -18,7 +18,6 @@ class ViewController: UIViewController {
     private var needToDeselectNotASetSelection = false
     lazy private var freeButtonIndex =  game.numOfCardsOnStart // the new free button index to add a new card to
     
-    private var setFound = false
     private var firstTimeDeckEmpty = true
     private var playerMadeMove = false
     private var computerNeedsToDealCards = false
@@ -35,6 +34,7 @@ class ViewController: UIViewController {
     let blankDiamond = NSAttributedString(string: "\u{25CA}")
     private let blankSquare = NSAttributedString(string: "\u{25A2}")
     private let blankCircle = NSAttributedString(string: "\u{25EF}")
+    private var timers = [Timer]()
     
     private let semiFilledDiamond = NSAttributedString(string: "\u{25C8}")
     private let semiFilledSquare = NSAttributedString(string: "\u{25A3}")
@@ -142,7 +142,7 @@ class ViewController: UIViewController {
         self.changeEmojiIndicatorToThinking()
         
         //TODO: change timeInterval from 1 to timeInterval
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        let thinkTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToThink -= 1
             if self.playerMadeMove {
                 timer.invalidate()
@@ -165,12 +165,13 @@ class ViewController: UIViewController {
                 }
             }
         }
+        timers.append(thinkTimer)
     }
     
     func waitAndMakeMove(withSetCards setCards: [Int]){
         var timeToWait = 2 // wait 2 seconds before make a move
         
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        let waitTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToWait -= 1
             
             if self.computerNeedsToDealCards {
@@ -216,6 +217,7 @@ class ViewController: UIViewController {
                 self.playMove()
             }
         }
+        timers.append(waitTimer)
     }
     
     func disableAllGameBoardButtons() {
@@ -304,6 +306,7 @@ class ViewController: UIViewController {
         computerMatchedButtons = [UIButton]()
         computerSelectedButtons = [UIButton]()
         game = SetGame()
+        resetTimers()
         selectGameMode()
         initGameBoard()
         freeButtonIndex = game.numOfCardsOnStart
@@ -315,6 +318,12 @@ class ViewController: UIViewController {
         dealCard.isEnabled = true //enable deal 3 cards button
         
         updateUI()
+    }
+    
+    func resetTimers() {
+        for timer in timers {
+            timer.invalidate()
+        }
     }
     
     @IBOutlet weak var computerScore: UILabel!
@@ -476,30 +485,64 @@ class ViewController: UIViewController {
         }
     }
     
+    func handleSelectedButton(onButton button: UIButton, buttonIndex touchedCardIndex: Int) {
+        var deleted = false
+        game.deselectCard(atIndex: touchedCardIndex)
+        for buttonIndex in 0..<selectedButtons.count where !deleted {
+            if selectedButtons[buttonIndex] == button {
+                selectedButtons.remove(at: buttonIndex)
+                deleted = true
+            }
+        }
+    }
+    
+    func handleUnSelectedButton(onButton button: UIButton, buttonIndex touchedCardIndex: Int) {
+        game.selectCard(atIndex: buttons[touchedCardIndex].tag)
+        selectedButtons.append(button)
+    }
+    
+    func handleThreeSelectedCardsOnBoard() {
+        let setFound = game.checkForSet()
+        if setFound {
+            dealCard.isEnabled = true
+            playerMadeMove = true
+            changeCardsShapeToSet()
+            addButtonsToMatchedButtonsArray()
+            userNeedToDealNewCards = true
+            computerNeedsToDealCards = true
+            disableButtons()
+            game.scorePlayer += 3
+            if game.deck.count == 0 {
+                hideMatchSetFromUI()
+                removeMatchSetFromGameBoard()
+            }
+            if game.cardsOnGameBoard.count == 0 {
+                endGame()
+            }
+        }
+        else {
+            changeCardsShapeToNotASet()
+            needToDeselectNotASetSelection = true
+            
+            game.scorePlayer -= 5
+        }
+        selectedButtons.removeAll()
+        playerMadeMove = false
+    }
     
     @IBOutlet weak var playerScoreLabel: UILabel!
     
     @IBOutlet weak var deckLabel: UILabel!
     
     @IBAction func touchCard(_ sender: UIButton) {
-        var setFound = false
-        
         checkIfNeedToEnd()
         
         if let touchedCardIndex = buttons.index(of: sender) {
             if isSelected(selectedButton: sender) {
-                var deleted = false
-                game.deselectCard(atIndex: touchedCardIndex)
-                for buttonIndex in 0..<selectedButtons.count where !deleted {
-                    if selectedButtons[buttonIndex] == sender {
-                        selectedButtons.remove(at: buttonIndex)
-                        deleted = true
-                    }
-                }
+                handleSelectedButton(onButton: sender, buttonIndex: touchedCardIndex)
             }
             else {
-                game.selectCard(atIndex: buttons[touchedCardIndex].tag)
-                selectedButtons.append(sender)
+                handleUnSelectedButton(onButton: sender, buttonIndex: touchedCardIndex)
             }
             
             if userNeedToDealNewCards { // a set was found and now a new card was selected
@@ -515,32 +558,7 @@ class ViewController: UIViewController {
             changeShape(ofButton: sender)
             
             if selectedButtons.count == 3 {
-                setFound = game.checkForSet()
-                if setFound {
-                    dealCard.isEnabled = true
-                    playerMadeMove = true
-                    changeCardsShapeToSet()
-                    addButtonsToMatchedButtonsArray()
-                    userNeedToDealNewCards = true
-                    computerNeedsToDealCards = true
-                    disableButtons()
-                    game.scorePlayer += 3
-                    if game.deck.count == 0 {
-                        hideMatchSetFromUI()
-                        removeMatchSetFromGameBoard()
-                    }
-                    if game.cardsOnGameBoard.count == 0 {
-                        endGame()
-                    }
-                }
-                else {
-                    changeCardsShapeToNotASet()
-                    needToDeselectNotASetSelection = true
-                    
-                    game.scorePlayer -= 5
-                }
-                selectedButtons.removeAll()
-                playerMadeMove = false
+                handleThreeSelectedCardsOnBoard()
             }
             updateUI()
         }
