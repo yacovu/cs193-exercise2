@@ -101,7 +101,7 @@ class ViewController: UIViewController {
 //            startThinking()
             
         default:
-            game.mode = SetGame.gameMode.playAgainstComputer
+            game.mode = SetGame.gameMode.singlePlayer
             computerStatusIndicator.text = ""
             computerScore.text = ""
         }
@@ -341,6 +341,7 @@ class ViewController: UIViewController {
             sender.isEnabled = false
         }
         userNeedToDealNewCards = false
+        clearButttons()
         //        matchedButtons.removeAll()
         //        computerMatchedButtons.removeAll()
         updateUI()
