@@ -127,6 +127,8 @@ class ViewController: UIViewController {
     
     func startThinking() {
         var timeToThink: Int
+        var setCards: [Int]?
+        
         switch diffLevel {
         case difficultyLevel.professional:
             timeToThink = Int(arc4random_uniform(31)) + 20 // 20-50 seconds
@@ -136,10 +138,9 @@ class ViewController: UIViewController {
             timeToThink = Int(arc4random_uniform(41)) + 20 // 20-60 seconds
             
         }
-        print(timeToThink)
-        var setCards: [Int]?
         
         self.changeEmojiIndicatorToThinking()
+        
         //TODO: change timeInterval from 1 to timeInterval
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToThink -= 1
@@ -156,7 +157,6 @@ class ViewController: UIViewController {
                     self.waitAndMakeMove(withSetCards: setCards!)
                 }
                 else {
-                    self.changeEmojiIndicatorToUnhappy()
                     self.dealCardsAndAddToGameBoard()
                     self.clearButttons()
                     timeToThink = 2
@@ -258,14 +258,6 @@ class ViewController: UIViewController {
         computerStatusIndicator.text = "Hurry up! It is Selecting a Set 😁"
     }
     
-    func changeEmojiIndicatorToUnhappy() {
-        computerStatusIndicator.text = "Computer Delt 3 New Cards 😤"
-    }
-    
-    func reset(scheduledTimer timer: Timer){
-        
-    }
-    
     
     @IBOutlet var buttons: [UIButton]! {
         didSet {
@@ -364,16 +356,9 @@ class ViewController: UIViewController {
                 needToEndGame = true
             }
         }
-        else { // insufficient cards in the deck. The button is disabled
-            //            if firstTimeDeckEmpty {
-            //                let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
-            //                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
-            //                self.present(alert, animated: true, completion: nil)
+        else {
             dealCard.isEnabled = false // disable the button as required
-            //                firstTimeDeckEmpty = false
-            //            }
         }
-        
     }
     
     func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card], playerType player: playerType) {
@@ -532,6 +517,7 @@ class ViewController: UIViewController {
             if selectedButtons.count == 3 {
                 setFound = game.checkForSet()
                 if setFound {
+                    dealCard.isEnabled = true
                     playerMadeMove = true
                     changeCardsShapeToSet()
                     addButtonsToMatchedButtonsArray()
