@@ -10,13 +10,22 @@ import Foundation
 
 public class SetGame {
     
+    
     let numOfCardsOnStart = 12
     
     let maxGameBoardCapacity = 24
     
     lazy var deckCapacity =  numOfDifferentColors * numOfDifferentShapes * numOfDifferentShadings * numOfShapes
     
-    var score = 0
+    var scorePlayer = 0
+    
+    var scoreComputer = 0
+    
+    let legalSetScore = 3
+    let illegaSetPenalty = 5
+    let hintPenalty = 1
+    
+    var mode = gameMode.singlePlayer
     
     let numOfDifferentColors = 3
     let numOfDifferentShapes = 3
@@ -28,6 +37,28 @@ public class SetGame {
     var cardsOnGameBoard = [Card]()
     
     var selectedCards = [Card]()
+    
+    enum gameMode {
+        case singlePlayer
+        case playAgainstComputer
+    }
+    
+    func updateScoreDueToLegalSet(playerType player: ViewController.playerType) {
+        switch player {
+        case ViewController.playerType.Computer:
+            scoreComputer += legalSetScore
+        default:
+            scorePlayer += legalSetScore
+        }
+    }
+    
+    func updateScoreDueToIllegalSet() {
+        scorePlayer -= illegaSetPenalty
+    }
+    
+    func updateScoreDueToHint() {
+        scorePlayer -= hintPenalty
+    }
     
     func selectCard(atIndex index: Int) {
         if selectedCards.count == 3 {
