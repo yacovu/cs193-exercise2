@@ -14,15 +14,17 @@ class ViewController: UIViewController {
     private var selectedButtons = [UIButton]()
     private var computerMatchedButtons = [UIButton]()
     private var matchedButtons = [UIButton]()
-    private var needToDealNewCards = false
+    private var userNeedToDealNewCards = false
     private var needToDeselectNotASetSelection = false
     lazy private var freeButtonIndex =  game.numOfCardsOnStart // the new free button index to add a new card to
     
     private var setFound = false
     private var firstTimeDeckEmpty = true
     private var playerMadeMove = false
+    private var computerNeedsToDealCards = false
     
     private var needToEndGame = false
+    private var diffLevel = difficultyLevel.amateur
     
     private(set) var colors = ["red", "green", "blue"]
     private(set) var shading = ["blank","semiFilled","fullyFilled"]
@@ -56,7 +58,13 @@ class ViewController: UIViewController {
         case player
         case Computer
     }
- 
+    
+    enum difficultyLevel: Int {
+        case amateur
+        case professional
+        case extreme
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +77,7 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)    
+        super.viewDidAppear(animated)
         initGameBoard()
         selectGameMode()
         
@@ -89,7 +97,8 @@ class ViewController: UIViewController {
             game.mode = SetGame.gameMode.playAgainstComputer
             computerStatusIndicator.text = "Computer is Thinking 🤔"
             computerScore.text = "Computer's Score: 0"
-            startThinking()
+            chooseDifficultyLevel()
+//            startThinking()
             
         default:
             game.mode = SetGame.gameMode.playAgainstComputer
@@ -98,13 +107,35 @@ class ViewController: UIViewController {
         }
     }
     
+    func chooseDifficultyLevel() {
+        let alert = UIAlertController(title: "Difficulty Level", message: "Please Choose Difficulty Level" , preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Amateur", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.amateur)}))
+        alert.addAction(UIAlertAction(title: "Professional", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.professional)}))
+        alert.addAction(UIAlertAction(title: "Extreme", style: UIAlertActionStyle.default, handler: {action in self.setDifficulty(difficultyLevel: difficultyLevel.extreme)}))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func setDifficulty(difficultyLevel level: difficultyLevel) {
+        diffLevel = level
+        startThinking()
+    }
+    
     func playMove() {
         startThinking()
     }
     
     
     func startThinking() {
-        var timeToThink = Int(arc4random_uniform(5)) + 10
+        var timeToThink: Int
+        switch diffLevel {
+        case difficultyLevel.professional:
+            timeToThink = Int(arc4random_uniform(31)) + 20 // 20-50 seconds
+        case difficultyLevel.extreme:
+            timeToThink = Int(arc4random_uniform(21)) + 10 // 10-30 seconds
+        default:
+            timeToThink = Int(arc4random_uniform(41)) + 20 // 20-60 seconds
+            
+        }
         print(timeToThink)
         var setCards: [Int]?
         
@@ -141,15 +172,24 @@ class ViewController: UIViewController {
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timeToWait -= 1
-            self.disableAllGameBoardButtons()
-            self.showComputerSet(setCards: setCards)
+            
+            if self.computerNeedsToDealCards {
+                self.dealCardsAndAddToGameBoard()
+                self.userNeedToDealNewCards = false
+                self.computerNeedsToDealCards = false
+            }
+            else {
+                self.disableAllGameBoardButtons()
+                self.showComputerSet(setCards: setCards)
+            }
+            
             if self.playerMadeMove {
                 timer.invalidate()
                 self.playMove()
                 self.playerMadeMove = false
                 self.enableAllGameBoardButtons()
             }
-           else if timeToWait == 0 {
+            else if timeToWait == 0 {
                 self.disableAllGameBoardButtons()
                 self.resetComputerSelectedButtons()
                 self.showComputerSet(setCards: setCards)
@@ -211,7 +251,7 @@ class ViewController: UIViewController {
     }
     
     func changeEmojiIndicatorToThinking() {
-        computerStatusIndicator.text = "Computers is Thinking 🤔"
+        computerStatusIndicator.text = "Computer is Thinking 🤔"
     }
     
     func changeEmojiIndicatorToHappy() {
@@ -223,7 +263,7 @@ class ViewController: UIViewController {
     }
     
     func reset(scheduledTimer timer: Timer){
-
+        
     }
     
     
@@ -279,7 +319,7 @@ class ViewController: UIViewController {
         selectedButtons = [UIButton]()
         computerMatchedButtons = [UIButton]()
         matchedButtons = [UIButton]()
-        needToDealNewCards = false
+        userNeedToDealNewCards = false
         dealCard.isEnabled = true //enable deal 3 cards button
         
         updateUI()
@@ -295,13 +335,13 @@ class ViewController: UIViewController {
         checkIfNeedToEnd()
         dealCardsAndAddToGameBoard()
         playerMadeMove = false
-
+        
         if game.cardsOnGameBoard.count == game.maxGameBoardCapacity { // insufficient cards in the game board. The button is disabled
             sender.isEnabled = false
         }
-        needToDealNewCards = false
-//        matchedButtons.removeAll()
-//        computerMatchedButtons.removeAll()
+        userNeedToDealNewCards = false
+        //        matchedButtons.removeAll()
+        //        computerMatchedButtons.removeAll()
         updateUI()
     }
     
@@ -325,15 +365,15 @@ class ViewController: UIViewController {
             }
         }
         else { // insufficient cards in the deck. The button is disabled
-//            if firstTimeDeckEmpty {
-//                let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
-//                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
-//                self.present(alert, animated: true, completion: nil)
-                dealCard.isEnabled = false // disable the button as required
-//                firstTimeDeckEmpty = false
-//            }
+            //            if firstTimeDeckEmpty {
+            //                let alert = UIAlertController(title: "Warning!", message: "Deck is Empty!", preferredStyle: UIAlertControllerStyle.alert)
+            //                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {action in self.checkIfNeedToEnd()}))
+            //                self.present(alert, animated: true, completion: nil)
+            dealCard.isEnabled = false // disable the button as required
+            //                firstTimeDeckEmpty = false
+            //            }
         }
-       
+        
     }
     
     func replaceThreeMatchedCardsWithNewOnes(newCards threeNewCards: [Card], playerType player: playerType) {
@@ -342,9 +382,6 @@ class ViewController: UIViewController {
         switch player {
         case playerType.Computer:
             threeOldIndexes = [computerMatchedButtons[0].tag, computerMatchedButtons[1].tag, computerMatchedButtons[2].tag]
-            if computerMatchEqualToPlayerMatch() { // prevent from player to redeal cards
-                matchedButtons.removeAll()
-            }
         default:
             threeOldIndexes = [matchedButtons[0].tag, matchedButtons[1].tag, matchedButtons[2].tag]
         }
@@ -356,7 +393,7 @@ class ViewController: UIViewController {
                         let shade = printShape(ofShape: shapeToShading[shapes[threeNewCards[matchIndex].shape]]![threeNewCards[matchIndex].shading].string, times: threeNewCards[matchIndex].numOfShapes + 1)
                         let attString = NSAttributedString(string: shade, attributes: [NSAttributedStringKey.foregroundColor : getColor(forCard: threeNewCards[matchIndex])])
                         buttons.setButton(atIndex: buttonIndex, tag: threeNewCards[matchIndex].identifier, attributedString: attString, for: UIControlState.normal)
-//                        changeShape(ofButton: buttons[buttonIndex])
+                        //                        changeShape(ofButton: buttons[buttonIndex])
                     }
                     
                 default:
@@ -370,10 +407,6 @@ class ViewController: UIViewController {
             }
         }
         addThreeNewCardsToSamePlaces(threeOldCardsPlaces: threeOldIndexes, threeCardsToAdd: threeNewCards)
-    }
-    
-    func computerMatchEqualToPlayerMatch() -> Bool {
-        return matchedButtons.contains(computerMatchedButtons[0]) && matchedButtons.contains(computerMatchedButtons[1]) && matchedButtons.contains(computerMatchedButtons[2])
     }
     
     func addThreeNewCardsToNewPlaces(newCards threeNewCards: [Card]) {
@@ -391,7 +424,7 @@ class ViewController: UIViewController {
             endGame()
         }
     }
-
+    
     func removeThreeOldCardsFromGameBoard(locatedAtButtons buttons: [UIButton]) {
         for button in buttons {
             var found = false
@@ -402,7 +435,7 @@ class ViewController: UIViewController {
                 }
             }
         }
-
+        
     }
     
     func addThreeNewCardsToGameBoard(threeCards cardsToAdd: [Card]) {
@@ -484,10 +517,10 @@ class ViewController: UIViewController {
                 selectedButtons.append(sender)
             }
             
-            if needToDealNewCards { // a set was found and now a new card was selected
+            if userNeedToDealNewCards { // a set was found and now a new card was selected
                 dealCardsAndAddToGameBoard(sender) // gets three new cards from the deck and adds them to the game board
                 clearButttons()
-                needToDealNewCards = false
+                userNeedToDealNewCards = false
             }
             if needToDeselectNotASetSelection {
                 clearButttons()
@@ -502,7 +535,8 @@ class ViewController: UIViewController {
                     playerMadeMove = true
                     changeCardsShapeToSet()
                     addButtonsToMatchedButtonsArray()
-                    needToDealNewCards = true
+                    userNeedToDealNewCards = true
+                    computerNeedsToDealCards = true
                     disableButtons()
                     game.scorePlayer += 3
                     if game.deck.count == 0 {
@@ -603,8 +637,8 @@ class ViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "New Game", style: UIAlertActionStyle.default, handler: {action in self.newGame(UIButton())}))
         self.present(alert, animated: true, completion: nil)
     }
-        
-        
+    
+    
     func clearButttons() {
         for button in buttons {
             button.layer.borderWidth = 0
@@ -620,9 +654,9 @@ class ViewController: UIViewController {
     func endGame() {
         
         if game.mode == SetGame.gameMode.playAgainstComputer {
-             printScoreStatistics()
+            printScoreStatistics()
         }
-       
+        
         
         let alert = UIAlertController(title: "Game Over", message: "No Further Moves!", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Exit", style: UIAlertActionStyle.default, handler: {action in self.game.exitGame()}))
@@ -744,11 +778,11 @@ class ViewController: UIViewController {
         case colorType.blue.rawValue:
             return UIColor.blue
         default:
-            return UIColor.black 
+            return UIColor.black
             
         }
     }
-
+    
     
     func printShape(ofShape shape: String, times numOfTimes: Int) -> String {
         var shapeToPrint = ""
