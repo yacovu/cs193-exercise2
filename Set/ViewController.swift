@@ -503,7 +503,7 @@ class ViewController: UIViewController {
             }
             
             if userNeedToDealNewCards { // a set was found and now a new card was selected
-                dealCardsAndAddToGameBoard(sender) // gets three new cards from the deck and adds them to the game board
+                dealCardsAndAddToGameBoard() // gets three new cards from the deck and adds them to the game board
                 clearButttons()
                 userNeedToDealNewCards = false
             }
